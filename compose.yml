@@ -1,6 +1,6 @@
 services:
   db-web:
-    image: postgresql
+    image: postgres
     restart: always
     environment:
       POSTGRES_DB: db-web
@@ -8,3 +8,14 @@ services:
       POSTGRES_PASSWORD: admin
     ports:
       - 5434:5432
+  backend:
+    depends_on:
+      - db-web
+    image: hudsonprojects/wajr-backend
+    ports:
+      - "8080:${BACKEND_APPLICATION_PORT}"
+    environment:
+      - APPLICATION_PORT=${BACKEND_APPLICATION_PORT}
+      - DATABASE_URL=${BACKEND_DATABASE_URL}
+      - DATABASE_USERNAME=${BACKEND_DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${BACKEND_DATABASE_PASSWORD}
