@@ -1,0 +1,37 @@
+<mat-card class="form-container" appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Cadastro</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form class="form-registration">
+            <div class="grid">
+                <mat-form-field class="col-12 form-tile">
+                    <mat-label>Nome</mat-label>
+                    <input type="text" matInput>
+                </mat-form-field>
+                <mat-form-field class="col-6 form-tile">
+                    <mat-label>Data de nascimento</mat-label>
+                    <input matInput [matDatepicker]="picker">
+                    <mat-hint>DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="col-6 form-tile">
+                    <mat-label>E-mail</mat-label>
+                    <input type="email" matInput>
+                </mat-form-field>
+                <mat-form-field class="col-6 form-tile">
+                    <mat-label>CPF</mat-label>
+                    <input type="text" inputmode="numeric" matInput>
+                </mat-form-field>
+                <mat-form-field class="col-6 form-tile">
+                    <mat-label>Senha</mat-label>
+                    <input type="password" matInput>
+                </mat-form-field>
+                <div class="col-12 form-tile">
+                    <button mat-raised-button color="primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

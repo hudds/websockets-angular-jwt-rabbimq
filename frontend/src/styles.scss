@@ -1,0 +1,75 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+* {
+    box-sizing: border-box;
+}
+.grid {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    $colWidth: calc(100% / 12);
+
+    .col-1 {
+        width: calc($colWidth * 1);
+    }
+
+    .col-2 {
+        width: calc($colWidth * 2);
+    }
+
+    .col-3 {
+        width: calc($colWidth * 3);
+    }
+
+    .col-4 {
+        width: calc($colWidth * 4);
+    }
+
+    .col-5 {
+        width: calc($colWidth * 5);
+    }
+
+    .col-6 {
+        width: calc($colWidth * 6);
+    }
+
+    .col-7 {
+        width: calc($colWidth * 7);
+    }
+
+    .col-8 {
+        width: calc($colWidth * 8);
+    }
+
+    .col-9 {
+        width: calc($colWidth * 9);
+    }
+
+    .col-10 {
+        width: calc($colWidth * 10);
+    }
+
+    .col-11 {
+        width: calc($colWidth * 11);
+    }
+
+    .col-12 {
+        width: calc($colWidth * 12);
+    }
+
+    @media (max-width: 600px) {
+        
+    }
+}
+
+.flex-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,16 @@
+.form-container{
+    margin:100px auto;
+    max-width:700px;
+    width: 100%;
+    .form-registration{
+        margin-top: 5px;
+        .form-tile{
+            padding: 5px;
+        }
+        .registration-link-container {
+             p {
+                margin-bottom: 0;
+             }
+        }
+    }
+}
