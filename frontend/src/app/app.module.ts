@@ -13,7 +13,7 @@ import {MatCardModule} from '@angular/material/card';
 import { RegistrationComponent } from './features/registration/pages/registration/registration.component'; 
 import {MatDatepickerModule} from '@angular/material/datepicker'; 
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
 
@@ -31,34 +31,28 @@ const appDateFormat = {
 };
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegistrationComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatDatepickerModule,
-    MatNativeDateModule
-  ],
-  providers: [
-    MatDatepickerModule,
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: appDateFormat,
-    },
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        RegistrationComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        MatDatepickerModule,
+        MatNativeDateModule], providers: [
+        MatDatepickerModule,
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+        { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+        {
+            provide: MAT_DATE_FORMATS,
+            useValue: appDateFormat,
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
