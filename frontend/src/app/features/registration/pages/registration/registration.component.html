@@ -3,33 +3,38 @@
         <mat-card-title>Cadastro</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <form class="form-registration">
+        <form class="form-registration" [formGroup]="formGroup" (ngSubmit)="doRegistration()">
             <div class="grid">
-                <mat-form-field class="col-12 form-tile">
+                <mat-form-field subscriptSizing="dynamic" class="col-12 form-tile">
                     <mat-label>Nome</mat-label>
-                    <input type="text" matInput>
+                    <input type="text" matInput [formControlName]="RegistrationFormField.Name">
+                    <mat-error *ngFor="let error of errorResolver.getErrorMessages(RegistrationFormField.Name)">{{error}}</mat-error>
                 </mat-form-field>
-                <mat-form-field class="col-6 form-tile">
+                <mat-form-field subscriptSizing="dynamic" class="col-6 form-tile">
                     <mat-label>Data de nascimento</mat-label>
-                    <input matInput [matDatepicker]="picker">
+                    <input matInput [matDatepicker]="picker" [formControlName]="RegistrationFormField.BirthDate">
                     <mat-hint>DD/MM/YYYY</mat-hint>
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngFor="let error of errorResolver.getErrorMessages(RegistrationFormField.BirthDate)">{{error}}</mat-error>
                 </mat-form-field>
-                <mat-form-field class="col-6 form-tile">
+                <mat-form-field subscriptSizing="dynamic" class="col-6 form-tile">
                     <mat-label>E-mail</mat-label>
-                    <input type="email" matInput>
+                    <input type="email" matInput [formControlName]="RegistrationFormField.Email">
+                    <mat-error *ngFor="let error of errorResolver.getErrorMessages(RegistrationFormField.Email)">{{error}}</mat-error>
                 </mat-form-field>
-                <mat-form-field class="col-6 form-tile">
+                <mat-form-field subscriptSizing="dynamic" class="col-6 form-tile">
                     <mat-label>CPF</mat-label>
-                    <input type="text" inputmode="numeric" matInput>
+                    <input type="text" inputmode="numeric" matInput [formControlName]="RegistrationFormField.Cpf">
+                    <mat-error *ngFor="let error of errorResolver.getErrorMessages(RegistrationFormField.Cpf)">{{error}}</mat-error>
                 </mat-form-field>
-                <mat-form-field class="col-6 form-tile">
+                <mat-form-field subscriptSizing="dynamic" class="col-6 form-tile">
                     <mat-label>Senha</mat-label>
-                    <input type="password" matInput>
+                    <input type="password" matInput [formControlName]="RegistrationFormField.Password">
+                    <mat-error *ngFor="let error of errorResolver.getErrorMessages(RegistrationFormField.Password)">{{error}}</mat-error>
                 </mat-form-field>
                 <div class="col-12 form-tile">
-                    <button mat-raised-button color="primary">Salvar</button>
+                    <button mat-raised-button color="primary" type="submit">Salvar</button>
                 </div>
             </div>
         </form>
