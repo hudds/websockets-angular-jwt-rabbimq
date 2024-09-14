@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormGroupFieldErrorResolver } from 'src/app/common/lib/field-error-resolver';
 import { AppValidators } from 'src/app/common/lib/validations';
 import { UserRegistrationData } from '../types/user-registration-data';
+import { APIError } from 'src/app/common/types/api-error';
+import { FormService } from 'src/app/common/lib/form-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationFormService {
+export class RegistrationFormService implements FormService{
 
   private _formGroup : FormGroup = new FormGroup({});
 
@@ -50,6 +52,12 @@ export class RegistrationFormService {
       email,
       password
     }
+  }
+
+  populateAPIFieldErrors(apiError : APIError) {
+    apiError.fieldErrors?.forEach(fieldError => {
+      this.formGroup.get(fieldError.field)?.setErrors(fieldError)
+    })
   }
 }
 

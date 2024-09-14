@@ -26,6 +26,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @EnableWebSecurity
 public class SecurityConfiguration {
     
+	public static final List<String> ALLOWED_ORIGINS = List.of("*");
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
@@ -39,6 +40,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(configurer -> configurer.disable());
         httpSecurity.authorizeHttpRequests(auth -> auth
+        		.requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/auth", "/user/registration").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/auth/refresh-token").permitAll()
@@ -53,9 +55,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("*"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowedOrigins(ALLOWED_ORIGINS);
+        
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;

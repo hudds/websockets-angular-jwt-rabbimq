@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -25,8 +25,10 @@ import dev.hudsonprojects.backend.common.lib.Locales;
 import dev.hudsonprojects.backend.security.login.AppUserDetailsService;
 
 @Configuration
-public class AppConfig  implements WebMvcConfigurer {
+public class AppConfig {
 
+
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -46,6 +48,26 @@ public class AppConfig  implements WebMvcConfigurer {
 
 		return authProvider;
 	}
+	
+	
+	@Bean
+	public WebMvcConfigurer webMvcConfigurer() {
+		return new WebMvcConfigurer() {
+//			@Override
+//			public void addCorsMappings(CorsRegistry registry) {
+//				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "DELETE", "OPTIONS");
+//			}
+			@Override
+			public void addInterceptors(@NonNull InterceptorRegistry registry) {
+				registry.addInterceptor(localeChangeInterceptor());
+			}
+			@Override
+			public void addFormatters(@NonNull FormatterRegistry registry) {
+				registry.addConverter(new StringToOffsetDateTimeConverter());
+				registry.addConverter(new OffsetDateTimeToStringConverter());
+			}
+		};
+	}
 
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
@@ -54,10 +76,7 @@ public class AppConfig  implements WebMvcConfigurer {
 		return lci;
 	}
 
-	@Override
-	public void addInterceptors(@NonNull InterceptorRegistry registry) {
-		registry.addInterceptor(localeChangeInterceptor());
-	}
+
 	
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -74,10 +93,6 @@ public class AppConfig  implements WebMvcConfigurer {
         return messageSource;
     }
 
-	@Override
-	public void addFormatters(@NonNull FormatterRegistry registry) {
-		registry.addConverter(new StringToOffsetDateTimeConverter());
-		registry.addConverter(new OffsetDateTimeToStringConverter());
-	}
+
 
 }

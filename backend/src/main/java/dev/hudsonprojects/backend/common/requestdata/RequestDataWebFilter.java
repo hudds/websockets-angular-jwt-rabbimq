@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,6 +20,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 @Order(1)
@@ -26,6 +29,8 @@ public class RequestDataWebFilter implements Filter {
 	private static final Locales DEFAULT_LOCALE = Locales.PT_BR;
 
 	private final RequestData requestData;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(RequestDataWebFilter.class);
 
 	public RequestDataWebFilter(RequestData requestData) {
 		this.requestData = requestData;
@@ -39,6 +44,9 @@ public class RequestDataWebFilter implements Filter {
 
 		HttpServletRequest req = (HttpServletRequest) request;
 
+		LOGGER.info("REQUEST {} {}", req.getMethod(), req.getRequestURL());
+		
+		
 		Optional.ofNullable(SecurityContextHolder.getContext())
 				.map(SecurityContext::getAuthentication)
 				.map(Authentication::getPrincipal)
@@ -50,6 +58,8 @@ public class RequestDataWebFilter implements Filter {
 		locale = locale == null ? DEFAULT_LOCALE.getLocale() : locale;
 		requestData.setLocale(locale);
 		chain.doFilter(request, response);
+		HttpServletResponse resp = (HttpServletResponse) response;
+		resp.addHeader("Access-Control-Allow-Origin", "*");
 	}
 
 }

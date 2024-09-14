@@ -15,20 +15,10 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import {MatSnackBarModule} from '@angular/material/snack-bar'; 
 
 
 
-const appDateFormat = {
-  parse: {
-    dateInput: 'D-M-YYYY',
-  },
-  display: {
-    dateInput: 'D-M-YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 
 @NgModule({ declarations: [
@@ -45,14 +35,11 @@ const appDateFormat = {
         MatButtonModule,
         MatCardModule,
         MatDatepickerModule,
+        MatSnackBarModule,
         MatNativeDateModule], providers: [
         MatDatepickerModule,
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
         { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-        {
-            provide: MAT_DATE_FORMATS,
-            useValue: appDateFormat,
-        },
         provideHttpClient(withInterceptorsFromDi()),
     ] })
 export class AppModule { }

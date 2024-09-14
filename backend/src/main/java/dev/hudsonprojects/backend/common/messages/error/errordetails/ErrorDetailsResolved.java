@@ -1,5 +1,6 @@
 package dev.hudsonprojects.backend.common.messages.error.errordetails;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public class ErrorDetailsResolved {
     private APIErrorType type;
     private String message;
     private HttpStatus status;
-    private List<APIFieldErrorResolved> fieldErrors;
+    private final List<APIFieldErrorResolved> fieldErrors = new ArrayList<>();
 
     public APIErrorType getType() {
         return type;
@@ -47,7 +48,10 @@ public class ErrorDetailsResolved {
     }
 
     public void setFieldErrors(List<APIFieldErrorResolved> fieldErrors) {
-        this.fieldErrors = fieldErrors;
+    	this.fieldErrors.clear();
+    	if(fieldErrors != null) {
+    		this.fieldErrors.addAll(fieldErrors);
+    	}
     }
 
     @Override

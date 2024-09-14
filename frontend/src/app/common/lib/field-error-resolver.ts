@@ -1,5 +1,7 @@
 import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { ValidationErrorCode } from "./validations";
+import { isAPIError, isAPIFieldError } from "../types/api-error";
+import { ObjectUtils } from "./utils/object-utils";
 
 const errorMessages = new Map<string, string>([
     [ValidationErrorCode.Required,'Campo obrigatório'],
@@ -11,7 +13,6 @@ const errorMessages = new Map<string, string>([
 
 export class FormGroupFieldErrorResolver {
     constructor(private formGroup?: FormGroup | null ){}
-    
     public getErrorMessages(fieldName: string) : string[]{
         const errors = this.formGroup?.get(fieldName)?.errors
         return resolveErrors(errors);
@@ -30,6 +31,9 @@ export class FormFieldErrorResolver {
 function resolveErrors(errors? : ValidationErrors | null) : string[]{
     if(errors != null){
         const errorsKeys = Object.keys(errors);
+        if(ObjectUtils.isStringArray(errors['messages'])){
+            return errors['messages'];
+        }
         let messages = new Set<string>();
         for(let i = 0; i < errorsKeys.length; i++){
             let errorKey = errorsKeys[i]
