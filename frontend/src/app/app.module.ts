@@ -16,15 +16,13 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } f
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatSnackBarModule} from '@angular/material/snack-bar'; 
-
-
-
-
+import { DashboardComponent } from './features/dashboard/pages/dashboard/dashboard.component';
 
 @NgModule({ declarations: [
         AppComponent,
         LoginComponent,
-        RegistrationComponent
+        RegistrationComponent,
+        DashboardComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,

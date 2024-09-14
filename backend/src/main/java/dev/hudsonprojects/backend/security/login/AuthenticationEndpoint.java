@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsResolved;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +30,7 @@ public class AuthenticationEndpoint {
 	@ApiResponse(responseCode = "200", description = "Successfully authenticated", content = {
 			@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SuccessfulLoginDTO.class)) })
 	@ApiResponse(responseCode = "401", description = "Email or CPF or password are incorrect", content = {
-			@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema()) })
+			@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDetailsResolved.class)) })
 	@PostMapping
 	public SuccessfulLoginDTO authenticate(@Valid @RequestBody LoginDTO login) {
 		return appUserLoginService.authenticate(login);

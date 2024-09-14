@@ -3,18 +3,24 @@
         <mat-card-title>Login</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <form class="form-login">
+        <form class="form-login" [formGroup]="formGroup" (ngSubmit)="login()">
             <div class="grid">
                 <mat-form-field class="col-12 form-tile">
                     <mat-label>CPF/E-mail</mat-label>
-                    <input type="text" matInput>
+                    <input type="text" matInput [formControlName]="LoginFormField.CpfOrEmail">
+                    <mat-error *ngFor="let error of fieldErrorReolver.getErrorMessages(LoginFormField.CpfOrEmail)">
+                        {{error}}
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field class="col-12 form-tile">
                     <mat-label>Senha</mat-label>
-                    <input type="password" matInput>
+                    <input type="password" matInput [formControlName]="LoginFormField.Password">
+                    <mat-error *ngFor="let error of fieldErrorReolver.getErrorMessages(LoginFormField.Password)">
+                        {{error}}
+                    </mat-error>
                 </mat-form-field>
                 <div class="col-12 flex-center form-tile">
-                    <button mat-raised-button color="primary">Entrar</button>
+                    <button mat-raised-button color="primary" type="submit">Entrar</button>
                 </div>
                 <div class="col-12 flex-center registration-link-container form-tile">
                     <p>Ainda não tem conta? <a routerLink="/cadastro">Cadastre-se</a></p>

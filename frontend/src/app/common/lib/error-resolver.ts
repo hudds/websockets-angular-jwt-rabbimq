@@ -1,9 +1,10 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FormService } from "./form-service";
-import { APIError, isAPIError } from "../types/api-error";
+import { APIError, APIErrorType, isAPIError } from "../types/api-error";
 
 export class AppErrorHandler {
 
+    public readonly expectedApiErrors : APIErrorType[] = [APIErrorType.VALIDATION_ERROR];
 
     constructor(private _snackBar : MatSnackBar, private formService : FormService){  }
     handle(error:any){
@@ -22,15 +23,13 @@ export class AppErrorHandler {
 
     private handleAPIError(error : APIError){
         this.formService.populateAPIFieldErrors(error);
-        console.error(error)
-        if(error.message){
+        if(this.expectedApiErrors.includes(error.type) && error.message){
             this._snackBar.open(error.message, "Ok", {})
             return;
         }
-        if("VALIDATION_ERROR" !== error.type){
-            this._snackBar.open("Ocorreu um erro desconhecido", "Ok", {})
-            console.error(error)
-        } 
+        
+        this._snackBar.open("Ocorreu um erro desconhecido", "Ok", {})
+        console.error(error)
     }
 
 }

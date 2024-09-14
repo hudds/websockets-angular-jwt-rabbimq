@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -123,6 +124,20 @@ public class GlobalExceptionHandler {
 		}
 		
 		return ResponseEntity.status(errorDetails.getStatus())
+				.body(messageResolver.getResolved(errorDetails));
+	}
+	
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ErrorDetailsResolved> handleBadCredentialsException(BadCredentialsException e){
+		
+		ErrorDetails errorDetails = ErrorDetailsBuilder.builder()
+				.setStatus(HttpStatus.UNAUTHORIZED)
+				.setMessage("authentication.badCredentials")
+				.setType(APIErrorType.UNAUTHORIZED)
+				.build();
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 				.body(messageResolver.getResolved(errorDetails));
 	}
 	

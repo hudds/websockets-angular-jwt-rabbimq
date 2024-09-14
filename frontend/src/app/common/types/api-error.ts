@@ -2,7 +2,7 @@ import { ObjectUtils } from "../lib/utils/object-utils"
 
 
 export interface APIError {
-    type: string
+    type: APIErrorType
     message?: string
     status: string
     fieldErrors?: APIFieldError[]
@@ -11,6 +11,36 @@ export interface APIError {
 export interface APIFieldError {
     field: string
     messages: string[]     
+}
+
+export enum APIErrorType{
+    HTTP_REQUEST_ERROR = 'HTTP_REQUEST_ERROR',
+	
+	/**
+	 * Usuário não autorizado
+	 */
+	UNAUTHORIZED = 'UNAUTHORIZED',
+	
+	/**
+	 * Usuário está autorizado mas não possui permissão
+	 */
+	FORBIDDEN = 'FORBIDDEN',
+	
+	/**
+	 * Erros de validação relacionados a regra de negócio
+	 */
+	VALIDATION_ERROR = 'VALIDATION_ERROR',
+	/**
+	 * Erros internos da a API
+	 */
+	INTERNAL_ERROR = 'INTERNAL_ERROR',
+	
+	/**
+	 * Erros que não se encaixam em nenhuma das outras categorias 
+	 */
+	OTHER = 'OTHER',
+	
+	NOT_FOUND = 'NOT_FOUND'
 }
 
 

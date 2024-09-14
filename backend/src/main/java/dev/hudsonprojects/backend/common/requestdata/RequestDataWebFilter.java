@@ -12,8 +12,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import dev.hudsonprojects.backend.appuser.AppUser;
 import dev.hudsonprojects.backend.common.lib.Locales;
+import dev.hudsonprojects.backend.security.login.AppUserDetails;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,16 +50,14 @@ public class RequestDataWebFilter implements Filter {
 		Optional.ofNullable(SecurityContextHolder.getContext())
 				.map(SecurityContext::getAuthentication)
 				.map(Authentication::getPrincipal)
-				.filter(AppUser.class::isInstance)
-				.map(AppUser.class::cast)
+				.filter(AppUserDetails.class::isInstance)
+				.map(AppUserDetails.class::cast)
 				.ifPresent(requestData::setUser);
 		
 		Locale locale = req.getLocale();
 		locale = locale == null ? DEFAULT_LOCALE.getLocale() : locale;
 		requestData.setLocale(locale);
 		chain.doFilter(request, response);
-		HttpServletResponse resp = (HttpServletResponse) response;
-		resp.addHeader("Access-Control-Allow-Origin", "*");
 	}
 
 }

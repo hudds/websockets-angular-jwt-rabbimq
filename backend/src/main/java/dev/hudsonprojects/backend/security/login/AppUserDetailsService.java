@@ -33,15 +33,21 @@ public class AppUserDetailsService implements UserDetailsService {
 	}
 
 
-	public Optional<AppUser> findAppUserByEmailOrCpf(String cpfOrEmail) {
-		if(EmailUtils.isEmailValid(cpfOrEmail)) {
-			return appUserRepository.findByEmail(cpfOrEmail);
-		}
-		if(CPFUtil.isCPF(cpfOrEmail)) {
-			return appUserRepository.findByCpf(cpfOrEmail.replaceAll("\\D", ""));
+	public Optional<AppUser> findAppUserByEmailOrCpf(String cpfOrEmailOrUsername) {
+		Optional<AppUser> byUsername = appUserRepository.findByUsername(cpfOrEmailOrUsername);
+		
+		if(byUsername.isPresent()) {
+			return byUsername;
 		}
 		
-		throw new UsernameNotFoundException(cpfOrEmail);
+		if(EmailUtils.isEmailValid(cpfOrEmailOrUsername)) {
+			return appUserRepository.findByEmail(cpfOrEmailOrUsername);
+		}
+		if(CPFUtil.isCPF(cpfOrEmailOrUsername)) {
+			return appUserRepository.findByCpf(cpfOrEmailOrUsername.replaceAll("\\D", ""));
+		}
+		
+		return Optional.empty();
 	}
 	
 	

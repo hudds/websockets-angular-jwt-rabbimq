@@ -18,10 +18,10 @@ public class ErrorDetails implements Serializable{
 	
 	private static final long serialVersionUID = 3739771697286260090L;
 	
-	private APIErrorType type;
+	private APIErrorType type = APIErrorType.OTHER;
 	private APIMessage message;
 	private HttpStatus status;
-	private List<APIFieldError> fieldErrors;
+	private List<APIFieldError> fieldErrors = new ArrayList<>();
 	
 
 	public APIErrorType getType() {

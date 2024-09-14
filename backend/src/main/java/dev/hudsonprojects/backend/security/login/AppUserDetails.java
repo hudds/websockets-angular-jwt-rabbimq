@@ -13,13 +13,13 @@ import dev.hudsonprojects.backend.security.credentials.CredentialsType;
 public class AppUserDetails implements UserDetails{
 	
     private final Long userId;
-    private final String externalId;
+    private final String username;
     private final String password;
     private final CredentialsType credentialsType;
     
     public AppUserDetails(AppUser appUser) {
     	this.userId = appUser.getUserId();
-    	this.externalId = appUser.getUsername();
+    	this.username = appUser.getUsername();
     	this.password = appUser.getCredentials().getPassword();
     	this.credentialsType = appUser.getCredentials().getCredentialsType();
     }
@@ -36,7 +36,7 @@ public class AppUserDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return this.externalId;
+		return this.username;
 	}
 	
 	public Long getUserId() {
