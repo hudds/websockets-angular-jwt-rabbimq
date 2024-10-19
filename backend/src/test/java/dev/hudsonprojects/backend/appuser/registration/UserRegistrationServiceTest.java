@@ -29,6 +29,7 @@ import dev.hudsonprojects.backend.common.messages.error.fielderror.APIFieldError
 import dev.hudsonprojects.backend.security.credentials.CredentialService;
 import dev.hudsonprojects.backend.security.credentials.Credentials;
 import dev.hudsonprojects.backend.security.credentials.CredentialsType;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class UserRegistrationServiceTest {
@@ -39,7 +40,9 @@ class UserRegistrationServiceTest {
     private AppUserRepository appUserRepository;
 	@Mock
     private AppUserValidationService userValidationService;
-	
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
+
 	@InjectMocks
 	private UserRegistrationService userRegistrationService;
 

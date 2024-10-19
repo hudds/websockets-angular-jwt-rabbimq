@@ -42,6 +42,7 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(auth -> auth
         		.requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/auth", "/user/registration").permitAll()
+                        .requestMatchers("/test/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/auth/refresh-token").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/user/auth/refresh-token").permitAll()

@@ -1,21 +1,44 @@
 services:
+  rabbitmq-web:
+    container_name: 'rabbitmq-web'
+    image: 'rabbitmq:management'
+    environment:
+      RABBITMQ_DEFAULT_PASS: $BACKEND_RABBIT_MQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $BACKEND_RABBIT_MQ_USERNAME
+    ports:
+      - '5672:5672'
+      - '15672:15672'
   db-web:
     image: postgres
     restart: always
     environment:
       POSTGRES_DB: db-web
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: $BACKEND_DATABASE_USERNAME
+      POSTGRES_PASSWORD: $BACKEND_DATABASE_PASSWORD
     ports:
       - 5434:5432
+  db-api:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: db-api
+      POSTGRES_USER: $API_DATABASE_USERNAME
+      POSTGRES_PASSWORD: $API_DATABASE_PASSWORD
+    ports:
+      - 5435:5432
   backend:
     depends_on:
       - db-web
+      - rabbitmq-web
     image: hudsonprojects/wajr-backend
     ports:
       - "8080:${BACKEND_APPLICATION_PORT}"
     environment:
-      - APPLICATION_PORT=${BACKEND_APPLICATION_PORT}
-      - DATABASE_URL=${BACKEND_DATABASE_URL}
-      - DATABASE_USERNAME=${BACKEND_DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${BACKEND_DATABASE_PASSWORD}
+      APPLICATION_PORT: ${BACKEND_APPLICATION_PORT}
+      DATABASE_URL: ${BACKEND_DATABASE_URL}
+      DATABASE_USERNAME: ${BACKEND_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${BACKEND_DATABASE_PASSWORD}
+      RABBIT_MQ_USERNAME: $BACKEND_RABBIT_MQ_USERNAME
+      RABBIT_MQ_PASSWORD: $BACKEND_RABBIT_MQ_PASSWORD
+      RABBIT_MQ_HOST: rabbitmq-web
+      RABBIT_MQ_PORT: 5672

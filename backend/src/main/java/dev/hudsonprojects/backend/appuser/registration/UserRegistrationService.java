@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import dev.hudsonprojects.backend.appuser.registration.event.AppUserCreated;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +34,13 @@ public class UserRegistrationService {
 
     private final AppUserValidationService userValidationService;
 
-    public UserRegistrationService(CredentialService credentialsService, AppUserRepository appUserRepository, AppUserValidationService userValidationService) {
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public UserRegistrationService(CredentialService credentialsService, AppUserRepository appUserRepository, AppUserValidationService userValidationService, ApplicationEventPublisher applicationEventPublisher) {
         this.credentialsService = credentialsService;
         this.appUserRepository = appUserRepository;
         this.userValidationService = userValidationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
     
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -58,7 +63,7 @@ public class UserRegistrationService {
         appUser.getCredentials().setCredentialsType(CredentialsType.USER);
         credentialsService.save(appUser.getCredentials());
         appUserRepository.save(appUser);
-        
+        applicationEventPublisher.publishEvent(new AppUserCreated(appUser.getUserId()));
         return new AppUserDTO(appUser);
     }
  

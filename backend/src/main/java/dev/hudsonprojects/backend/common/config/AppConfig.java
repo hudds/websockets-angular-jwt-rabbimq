@@ -1,8 +1,13 @@
 package dev.hudsonprojects.backend.common.config;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
@@ -93,6 +98,14 @@ public class AppConfig {
         return messageSource;
     }
 
+	@Bean
+	@Scope("prototype")
+	public ObjectMapper objectMapper(){
+		return JsonMapper.builder()
+				.findAndAddModules()
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.build();
+	}
 
 
 }
