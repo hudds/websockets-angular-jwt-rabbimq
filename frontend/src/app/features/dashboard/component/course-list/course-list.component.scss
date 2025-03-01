@@ -1,0 +1,43 @@
+.course-list-container {
+    max-width: 1200px;
+    padding: 20px;
+    margin: 0 auto;
+
+    .course-list {
+        list-style-type: none;
+        display: flex;
+        align-items: start;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        .course-container {
+            padding: 10px;
+            @media (max-width: 1000px) {
+                width: 50%;
+            }
+            @media (max-width: 600px) {
+                width: 100%;
+            }
+            width: 30%;
+        }
+
+    }
+
+    .loading {
+        .loading-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .load-more-button {
+        font-size: 1.5rem;
+        width: 100%;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+
+}

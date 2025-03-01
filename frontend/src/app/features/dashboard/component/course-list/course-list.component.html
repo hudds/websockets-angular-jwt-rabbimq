@@ -1,0 +1,19 @@
+<div class="course-list-container">
+    <ul class="course-list" *ngIf="coursesState.courses">
+        <li *ngFor="let course of coursesState.courses" class="course-container">
+            <app-course [course]="course">
+            </app-course>
+        </li>
+    </ul>
+    <div class="load-more-button-container" *ngIf="!coursesState.loading">
+        <button aria-label="Ver mais" class="load-more-button" (click)="loadNextPage()">
+            <p>Ver mais</p>
+            <mat-icon fontIcon="arrow_downward"></mat-icon>
+        </button>
+    </div>
+    <div class="loading" *ngIf="coursesState.loading">
+        <div class="loading-content">
+            <mat-spinner aria-label="Carregando"></mat-spinner>
+        </div>
+    </div>
+</div>

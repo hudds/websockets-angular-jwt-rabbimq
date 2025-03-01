@@ -92,6 +92,5 @@ public class ErrorDetails implements Serializable{
 				&& status == other.status && type == other.type;
 	}
 	
-
 }
 

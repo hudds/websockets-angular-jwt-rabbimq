@@ -2,6 +2,7 @@ package dev.hudsonprojects.api.security.refreshtoken;
 
 import java.time.LocalDateTime;
 
+import dev.hudsonprojects.api.common.entity.DefaultEntity;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,8 +18,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "refresh_token")
-public class RefreshToken {
+@Table(schema = "public", name = "refresh_token")
+public class RefreshToken extends DefaultEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +31,6 @@ public class RefreshToken {
 	@JoinColumn(name = "refresh_token_family_id", referencedColumnName = "refresh_token_family_id")
 	private RefreshTokenFamily refreshTokenFamily;
 	private boolean invalidated;
-	@Column(name = "created_at", updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createdAt;
-	@Column(name = "updated_at")
-	@UpdateTimestamp
-	private LocalDateTime updatedAt;
 
 	public Long getRefreshTokenId() {
 		return refreshTokenId;
@@ -71,22 +66,6 @@ public class RefreshToken {
 
 	public void setInvalidated(boolean invalidated) {
 		this.invalidated = invalidated;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
 	}
 
 	public AppUser getAppUser() {

@@ -48,26 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            final String jwt = authHeader.substring(7);
-            final String userIdentifier = jwtService.extractUsername(jwt);
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (userIdentifier != null && authentication == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userIdentifier);
-
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
-
+            authenticateJwt(request, authHeader);
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
         	logger.info("ACCESS DENIED FOR REQUEST: {} {}", request.getMethod(), request.getRequestURL());
@@ -75,6 +56,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 		
 	}
-	
+
+    private void authenticateJwt(HttpServletRequest request, String authHeader) {
+        final String jwt = authHeader.substring(7);
+        final String userIdentifier = jwtService.extractUsername(jwt);
+
+        authenticateJwt(request, userIdentifier, jwt);
+    }
+
+    private void authenticateJwt(HttpServletRequest request, String userIdentifier, String jwt) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (userIdentifier != null && authentication == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userIdentifier);
+
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+    }
+
 
 }

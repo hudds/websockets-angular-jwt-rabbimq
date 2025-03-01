@@ -1,5 +1,6 @@
 package dev.hudsonprojects.api.person;
 
+import dev.hudsonprojects.api.common.entity.DefaultEntity;
 import dev.hudsonprojects.api.common.lib.util.StringUtils;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,22 +10,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Person {
+@Table(schema = "public", name = "person")
+public class Person extends DefaultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "person_id")
     private Long personId;
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
     @Column(nullable = false)
     private String name;
+    @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(nullable = false, unique = true)
     private String cpf;
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     public Long getPersonId() {
         return personId;
@@ -64,21 +64,5 @@ public class Person {
 
     public void setCpf(String cpf) {
         this.cpf = StringUtils.removeNonDigits(cpf);
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

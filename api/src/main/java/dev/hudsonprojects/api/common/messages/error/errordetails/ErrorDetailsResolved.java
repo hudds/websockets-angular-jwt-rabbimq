@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import dev.hudsonprojects.api.common.messages.error.APIMessageResolved;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +16,8 @@ import dev.hudsonprojects.api.common.messages.error.fielderror.APIFieldErrorReso
 public class ErrorDetailsResolved {
 
     private APIErrorType type;
-    private String message;
+    private APIMessageResolved message;
+    private String messageCode;
     private HttpStatus status;
     private final List<APIFieldErrorResolved> fieldErrors = new ArrayList<>();
 
@@ -27,11 +29,11 @@ public class ErrorDetailsResolved {
         this.type = type;
     }
 
-    public String getMessage() {
+    public APIMessageResolved getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(APIMessageResolved message) {
         this.message = message;
     }
 

@@ -1,0 +1,7 @@
+cd ./docker
+docker compose stop
+docker compose up db-web -d
+docker compose up db-api -d
+docker compose up rabbitmq-web -d
+docker compose up rabbitmq-api -d
+cd ..

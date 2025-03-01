@@ -6,7 +6,6 @@ import dev.hudsonprojects.api.person.PersonDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,7 +36,7 @@ public class PersonRegistrationEndpoint {
     @ApiResponse(responseCode = "500", description = "Unexpected error", content = {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDetailsResolved.class)) })
     @PostMapping(value = "/cpf/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PersonDTO createByCpf(@Valid @CPF @PathParam("cpf") String cpf, @Valid @RequestBody PersonRegistrationDTO personRegistrationDTO){
+    public PersonDTO createByCpf(@Valid @CPF @PathVariable("cpf") String cpf, @Valid @RequestBody PersonRegistrationDTO personRegistrationDTO){
         personRegistrationDTO.setCpf(cpf);
         return personRegistrationService.createByCpf(personRegistrationDTO);
     }
@@ -53,7 +52,7 @@ public class PersonRegistrationEndpoint {
     @ApiResponse(responseCode = "500", description = "Unexpected error", content = {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDetailsResolved.class)) })
     @PutMapping(value = "/cpf/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PersonDTO createOrUpdateByCpf(@Valid @CPF @PathParam("cpf") String cpf, @Valid @RequestBody PersonRegistrationDTO personRegistrationDTO){
+    public PersonDTO createOrUpdateByCpf(@Valid @CPF @PathVariable("cpf") String cpf, @Valid @RequestBody PersonRegistrationDTO personRegistrationDTO){
         personRegistrationDTO.setCpf(cpf);
         return personRegistrationService.createOrUpdateByCpf(personRegistrationDTO);
     }

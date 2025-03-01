@@ -1,33 +1,34 @@
 package dev.hudsonprojects.api.appuser;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import dev.hudsonprojects.api.common.entity.DefaultEntity;
+import jakarta.persistence.*;
 
 import dev.hudsonprojects.api.security.credentials.Credentials;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 
 @Entity
-public class AppUser {
+@Table(schema = "public", name = "app_user")
+public class AppUser extends DefaultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
-    @Column(unique = true, nullable = false, updatable = false)
+    @Column(name = "username", unique = true, nullable = false, updatable = false)
     private String username;
     @OneToOne
+    @JoinColumn(name = "credentials_id", referencedColumnName = "credentials_id")
     private Credentials credentials;
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+
+    public AppUser() {}
+
+    public AppUser(AppUser other) {
+        super(other);
+        this.userId = other.userId;
+        this.username = other.username;
+        this.credentials = other.credentials != null ? new Credentials(other.credentials) : null;
+    }
 
     public Long getUserId() {
         return userId;
@@ -66,21 +67,4 @@ public class AppUser {
         this.username = username;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    
 }

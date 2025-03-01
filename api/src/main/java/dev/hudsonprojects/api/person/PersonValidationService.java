@@ -38,11 +38,11 @@ public class PersonValidationService {
         return GenericValidator.builder(Person.class)
             .addValidation(
                 "cpf", 
-                "validation.user.cpf.exists", 
+                "validation.person.cpf.exists",
                 this::notExistsUserWithCpf
             ).addValidation(
                 "email", 
-                "validation.user.email.exists", 
+                "validation.person.email.exists",
                 this::notExistsUserWithEmail
             ).build();
     }
@@ -89,19 +89,19 @@ public class PersonValidationService {
                         user -> isNotBlank(user.getName())
                 ).addValidation(
                         "name",
-                        "validation.user.name.invalid",
+                        "validation.person.name.invalid",
                         user -> isBlank(user.getName()) || isLettersOnly(user.getName())
                 ).addValidation(
                         "name",
-                        "validation.user.name.fullName",
+                        "validation.person.name.fullName",
                         user -> isBlank(user.getName()) || wordCount(user.getName()) > 1
                 ).addValidation(
                         "email",
-                        "validation.user.email.invalid",
+                        "validation.person.email.invalid",
                         user -> isEmailValid(user)
                 ).addValidation(
                         "cpf",
-                        "validation.user.cpf.required",
+                        "validation.person.cpf.required",
                         user -> isNotBlank(user.getCpf())
                 ).addValidation(
                         "cpf",

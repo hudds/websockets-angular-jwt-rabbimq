@@ -13,7 +13,6 @@ public class SuccessfulLoginDTO {
 	
 	public SuccessfulLoginDTO(AppUser appUser, RefreshToken refreshToken, String accessToken) {
 		this.user = new AppUserDTO(appUser);
-		this.accessToken = refreshToken.getToken();
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken.getToken();
 	}

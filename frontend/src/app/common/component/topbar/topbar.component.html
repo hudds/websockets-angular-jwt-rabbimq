@@ -1,0 +1,24 @@
+<div class="topbar">
+    <div class="topbar-content">
+        <h1>Cursos</h1>
+        <div *ngIf="hasUser">
+            <div class="user-info">
+                <div class="user-icon-container">
+                    <mat-icon aria-hidden="false" aria-label="Usuário"  fontIcon="account_circle"></mat-icon>
+                </div>
+                <div class="username-container">
+                    {{user?.name}}
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Opções">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+                      <mat-icon>logout</mat-icon>
+                      <span>Logout</span>
+                    </button>
+                  </mat-menu>
+            </div>
+        </div>
+    </div>
+</div>

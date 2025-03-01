@@ -73,7 +73,7 @@ public class ErrorDetailsBuilder {
 
 	public ErrorDetailsBuilder addFieldErrors(Collection<FieldError> fieldErrors) {
 		for(FieldError fieldError : fieldErrors) {
-			addFieldError(fieldError.getField(), new APIMessage(fieldError.getDefaultMessage(), fieldError.getArguments()));	
+			addFieldError(fieldError.getField(), new APIMessage(fieldError.getCode(), fieldError.getArguments()));
 		}
 		return this;
 	}
@@ -119,6 +119,10 @@ public class ErrorDetailsBuilder {
 
 	public static ErrorDetailsBuilder withAPIFieldErrors(Collection<APIFieldError> fieldErrors) {
 		return builder().setFieldErrors(fieldErrors);
+	}
+
+	public static ErrorDetailsBuilder withAPIFieldErrors(APIFieldError... fieldErrors) {
+		return builder().setFieldErrors(new ArrayList<>(List.of(fieldErrors)));
 	}
 
 	public static ErrorDetails buildWithMessage(String code, Object ... args) {

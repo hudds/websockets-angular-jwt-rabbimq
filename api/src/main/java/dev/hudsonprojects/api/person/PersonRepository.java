@@ -1,15 +1,15 @@
 package dev.hudsonprojects.api.person;
 
-import dev.hudsonprojects.api.appuser.AppUser;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface PersonRepository extends CrudRepository<Person, Long> {
+public interface PersonRepository extends JpaRepository<Person, Long> {
 
-    Optional<AppUser> findByEmailOrCpf(String email, String cpf);
+    Optional<Person> findByEmailOrCpf(String email, String cpf);
 
-    Optional<AppUser> findByCpf(String cpf);
+    Optional<Person> findByCpf(String cpf);
     
     boolean existsByCpf(String cpf);
 
@@ -19,9 +19,11 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
     boolean existsByEmailAndPersonIdNot(String email, Long userId);
 
-    Optional<AppUser> findByEmail(String usernameOrPassword);
+    Optional<Person> findByEmail(String usernameOrPassword);
 
     Optional<Long> findPersonIdByCpf(String cpf);
 
     Optional<Person> findPersonByCpf(String cpf);
+
+    Person getReferenceByCpf(String cpf);
 }

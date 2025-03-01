@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import dev.hudsonprojects.api.common.messages.error.APIMessageResolved;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -22,27 +24,30 @@ import dev.hudsonprojects.api.common.requestdata.RequestData;
 @Component
 public class MessageResolver {
 
-	
+	private final MessageSource messageSource;
+	private final RequestData requestData;
+
 	@Autowired
-	private MessageSource messageSource;
-	
-	@Autowired
-	private RequestData requestData;
-	
-	public String getResolvedMessage(APIMessage message) {
+	public MessageResolver(MessageSource messageSource, RequestData requestData) {
+		this.messageSource = messageSource;
+		this.requestData = requestData;
+	}
+
+	public APIMessageResolved getResolvedMessage(APIMessage message) {
 		if(message == null) {
 			return null;
 		}
-		
+		String code = message.getCode();
 		try {
-			return messageSource.getMessage(message.getCode(), message.getArgs(), requestData.getLocale());
+			String messageResolved = messageSource.getMessage(code, message.getArgs(), requestData.getLocale());
+			return new APIMessageResolved(messageResolved, code);
 		} catch (NoSuchMessageException e) {
-			return message.getCode();
+			return new APIMessageResolved(null, code);
 		}
 	}
 	
 	
-	public List<String> getResolvedAPIMessages(Collection<APIMessage> messages) {
+	public List<APIMessageResolved> getResolvedAPIMessages(Collection<APIMessage> messages) {
 		if(messages == null) {
 			return Collections.emptyList();
 		}

@@ -45,6 +45,10 @@ public class GenericValidator<T> {
         }
 
         public Builder<T> addValidation(String fieldName, String message, Function<T, Boolean> isValid){
+            return addValidation(fieldName, new APIMessage(message), isValid);
+        }
+
+        public Builder<T> addValidation(String fieldName, APIMessage message, Function<T, Boolean> isValid){
             this.actions.add(new GenericValidatorAction<>(fieldName, message, isValid));
             return this;
         }
@@ -58,19 +62,23 @@ public class GenericValidator<T> {
     public static class GenericValidatorAction<T>{
         private final String fieldName;
         private final Function<T, Boolean> isValid;
-        private final String message;
+        private final APIMessage message;
 
-        public GenericValidatorAction(String fieldName, String message, Function<T, Boolean> isValid) {
+        public GenericValidatorAction(String fieldName, APIMessage message, Function<T, Boolean> isValid) {
             this.fieldName = fieldName;
             this.isValid = isValid;
             this.message = message;
+        }
+
+        public GenericValidatorAction(String fieldName, String message, Function<T, Boolean> isValid) {
+            this(fieldName, new APIMessage(message), isValid);
         }
 
         public Optional<APIFieldError> validate(T value){
             if (Boolean.TRUE.equals(isValid.apply(value))) {
                 return Optional.empty();
             }
-            return Optional.of(new APIFieldError(fieldName, List.of(new APIMessage(message))));
+            return Optional.of(new APIFieldError(fieldName, List.of(message)));
         }
         
     }

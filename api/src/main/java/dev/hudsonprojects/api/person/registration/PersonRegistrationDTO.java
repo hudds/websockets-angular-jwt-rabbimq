@@ -22,19 +22,19 @@ public class PersonRegistrationDTO {
     @CPF
     private String cpf;
 
-    public @Email String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@Email String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @NotBlank String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotBlank String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -46,11 +46,11 @@ public class PersonRegistrationDTO {
         this.birthDate = birthDate;
     }
 
-    public @NotBlank String getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(@NotBlank String cpf) {
+    public void setCpf(String cpf) {
         this.cpf = StringUtils.removeNonDigits(cpf);
     }
 

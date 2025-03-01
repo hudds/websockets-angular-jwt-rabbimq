@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -40,17 +41,27 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(configurer -> configurer.disable());
         httpSecurity.authorizeHttpRequests(auth -> auth
-        		.requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/user/auth").permitAll()
-                .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user/auth/refresh-token").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/user/auth/refresh-token").permitAll()
-                .anyRequest().authenticated()
-            ).sessionManagement(sessionConf -> sessionConf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                        .requestMatchers("/test/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/auth").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/auth/refresh-token").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/user/auth/refresh-token").permitAll()
+                        .anyRequest().authenticated()
+                ).sessionManagement(sessionConf -> sessionConf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .exceptionHandling(customize -> customize.authenticationEntryPoint(securityException401EntryPoint()))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
+
+    public AuthenticationEntryPoint securityException401EntryPoint(){
+        return (request, response, authException) -> {
+            response.setHeader("WWW-Authenticate", "Bearer");
+            response.setStatus(401);
+        };
+    }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){

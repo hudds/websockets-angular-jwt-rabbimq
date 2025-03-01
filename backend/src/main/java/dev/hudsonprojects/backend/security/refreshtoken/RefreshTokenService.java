@@ -1,7 +1,7 @@
 package dev.hudsonprojects.backend.security.refreshtoken;
 
-import java.util.ArrayList;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import dev.hudsonprojects.backend.appuser.AppUser;
@@ -17,7 +17,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class RefreshTokenService {
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RefreshTokenService.class);
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final RefreshTokenFamilyRepository refreshTokenFamilyRepository;
 	private final JwtService jwtService;

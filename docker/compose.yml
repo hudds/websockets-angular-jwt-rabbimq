@@ -1,0 +1,105 @@
+services:
+  rabbitmq-web:
+    container_name: 'rabbitmq-web'
+    image: 'rabbitmq:management'
+    environment:
+      RABBITMQ_DEFAULT_PASS: $BACKEND_RABBIT_MQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $BACKEND_RABBIT_MQ_USERNAME
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+  db-web:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: db-web
+      POSTGRES_USER: $BACKEND_DATABASE_USERNAME
+      POSTGRES_PASSWORD: $BACKEND_DATABASE_PASSWORD
+    ports:
+      - 5434:5432
+  db-api:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: db-api
+      POSTGRES_USER: $API_DATABASE_USERNAME
+      POSTGRES_PASSWORD: $API_DATABASE_PASSWORD
+    ports:
+      - 5435:5432
+
+  backend:
+    image: hudsonprojects/wajr-backend-nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-service
+
+  backend-service:
+    depends_on:
+      - db-web
+      - rabbitmq-web
+      - courses-api
+    image: hudsonprojects/wajr-backend
+    ports:
+      - "8061-8069:${BACKEND_APPLICATION_PORT}"
+    environment:
+      APPLICATION_PORT: ${BACKEND_APPLICATION_PORT}
+      DATABASE_URL: ${BACKEND_DATABASE_URL}
+      DATABASE_USERNAME: ${BACKEND_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${BACKEND_DATABASE_PASSWORD}
+      RABBIT_MQ_USERNAME: $BACKEND_RABBIT_MQ_USERNAME
+      RABBIT_MQ_PASSWORD: $BACKEND_RABBIT_MQ_PASSWORD
+      RABBIT_MQ_HOST: rabbitmq-web
+      RABBIT_MQ_PORT: 5672
+      COURSES_API_URL: ${API_APPLICATION_URL}
+      COURSES_API_USERNAME: $API_USER_DEFAULT_USERNAME
+      COURSES_API_PASSWORD: $API_USER_DEFAULT_PASSWORD
+    deploy:
+      mode: replicated
+      replicas: 3
+      endpoint_mode: vip
+
+  rabbitmq-api:
+    container_name: 'rabbitmq-api'
+    image: 'rabbitmq:management'
+    environment:
+      RABBITMQ_DEFAULT_PASS: $API_RABBIT_MQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $API_RABBIT_MQ_USERNAME
+    ports:
+      - '5673:5672'
+      - '15673:15672'
+      
+  courses-api:
+    image: hudsonprojects/wajr-api-nginx
+    ports:
+      - "8081:80"
+    depends_on:
+      - courses-api-service
+
+  courses-api-service:
+    depends_on:
+      - db-api
+      - rabbitmq-api
+    image: hudsonprojects/wajr-api
+    ports:
+      - "8071-8079:${API_APPLICATION_PORT}"
+    environment:
+      APPLICATION_PORT: ${API_APPLICATION_PORT}
+      DATABASE_URL: ${API_DATABASE_URL}
+      DATABASE_USERNAME: ${API_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${API_DATABASE_PASSWORD}
+      ENABLE_DEFAULT_APPLICATION_USER: ${API_USER_DEFAULT_ENABLE}
+      DEFAULT_APPLICATION_USER_USERNAME: ${API_USER_DEFAULT_USERNAME}
+      DEFAULT_APPLICATION_USER_PASSWORD: ${API_USER_DEFAULT_PASSWORD}
+      RABBIT_MQ_USERNAME: $API_RABBIT_MQ_USERNAME
+      RABBIT_MQ_PASSWORD: $API_RABBIT_MQ_PASSWORD
+      RABBIT_MQ_HOST: rabbitmq-api
+      RABBIT_MQ_PORT: 5672
+    deploy:
+      mode: replicated
+      replicas: 3
+      endpoint_mode: vip
+
+  connection-debug:
+    image: ubuntu
+    command: tail -F anything

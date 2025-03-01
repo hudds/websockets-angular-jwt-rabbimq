@@ -3,6 +3,7 @@ package dev.hudsonprojects.api.common.messages.error.errordetails;
 import java.util.List;
 import java.util.Objects;
 
+import dev.hudsonprojects.api.common.messages.error.APIMessageResolved;
 import org.springframework.http.HttpStatus;
 
 import dev.hudsonprojects.api.common.exception.APIErrorType;
@@ -24,7 +25,7 @@ public class ErrorDetailsResolvedBuilder {
 		return this;
 	}
 	
-	public ErrorDetailsResolvedBuilder setMessage(String message) {
+	public ErrorDetailsResolvedBuilder setMessage(APIMessageResolved message) {
 		this.errorDetails.setMessage(message);
 		return this;
 	}

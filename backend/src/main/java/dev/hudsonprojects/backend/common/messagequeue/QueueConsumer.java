@@ -21,8 +21,14 @@ public abstract class QueueConsumer<T> {
     public abstract void receive(@Payload String message);
 
     protected final void convertAndProcessMessage(String message) {
+
         try {
-            T convertedMessage = objectMapper.reader().readValue(message, getMessageType());
+            T convertedMessage;
+            if(getMessageType().isAssignableFrom(message.getClass())){
+                convertedMessage = (T) message;
+            } else {
+                convertedMessage = objectMapper.reader().readValue(message, getMessageType());
+            }
             processMessage(convertedMessage);
         } catch (IOException e) {
             throw new QueueConsumerException(e);

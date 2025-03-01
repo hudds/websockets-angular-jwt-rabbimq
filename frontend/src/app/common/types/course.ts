@@ -1,0 +1,23 @@
+export interface Course{
+    courseId:number;
+    name:string;
+    slots:number;
+    createdAt?:string;
+    updatedAt?:string;
+    subscriptionCount:number;
+    subscribed?:boolean;
+    latestSubscription?:string;
+}
+
+
+export class CourseFunctions {
+    static copyValues(origin : Course, target : Course) : void{
+        target.createdAt = origin.createdAt
+        target.updatedAt = origin.updatedAt
+        target.latestSubscription = origin.latestSubscription
+        target.name = origin.name
+        target.slots = origin.slots
+        target.subscribed = origin.subscribed
+        target.subscriptionCount = origin.subscriptionCount
+    }
+}

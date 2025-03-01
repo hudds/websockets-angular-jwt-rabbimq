@@ -31,9 +31,8 @@ export class SessionService {
 
   public setSessionStatus(sessionStatus : SessionStatus | null) : void {
     if(sessionStatus){
+      console.log("sessionStatus changed to: ", sessionStatus.status)
       localStorage.setItem("sessionStatus", JSON.stringify(sessionStatus));
-    } else {
-      localStorage.removeItem("sessionStatus")
     }
     this.userSubject.next(this.getSessionStatus()?.user ?? null)
   }
@@ -46,5 +45,6 @@ export class SessionService {
 
 export interface SessionStatus {
   status: "UNAUTHENTICATED" | "AUTHENTICATED",
+
   user?: AppUser
 }

@@ -7,24 +7,6 @@ import { SessionService } from 'src/app/features/security/service/session.servic
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent {
 
-  user : AppUser | null = null
-
-
-  constructor(private sessionService : SessionService) {
-
-  }
-
-  ngOnInit(): void {
-    this.user =  this.sessionService.getUser()
-    this.sessionService.userSubject.subscribe(user => {
-      this.user = user
-    })
-  }
-
-
-  get hasUser() : boolean {
-    return this.user != null;
-  }
 }

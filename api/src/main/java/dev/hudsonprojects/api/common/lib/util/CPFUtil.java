@@ -2,6 +2,7 @@ package dev.hudsonprojects.api.common.lib.util;
 
 
 import java.util.InputMismatchException;
+import java.util.regex.Pattern;
 
 public final class CPFUtil {
 
@@ -12,6 +13,11 @@ public final class CPFUtil {
         if(StringUtils.isBlank(cpf)){
             return false;
         }
+         boolean isCpfMascarado = cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
+         boolean isCpfSemMascara = cpf.matches("\\d{11}");
+         if(!isCpfMascarado && !isCpfSemMascara){
+             return false;
+         }
 
         cpf = cpf.replaceAll("\\D", "");
         

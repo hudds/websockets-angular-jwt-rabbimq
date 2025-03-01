@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+
+<body>
+    <ul id="messages">
+
+    </ul>
+    <script>
+        var messages = [];
+        function addMessage(message) {
+            messages.push(message)
+            updateMessages()
+        }
+
+        function updateMessages() {
+            document.getElementById("messages").innerHTML = messages.map(message => `<li>${message}</li>`).join("");
+        }
+
+        const stompClient = new StompJs.Client({
+            brokerURL: 'ws://localhost:8080/events'
+        });
+
+        stompClient.onConnect = (frame) => {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/course', (message) => {
+                addMessage(message.body)
+            });
+        };
+
+        stompClient.onWebSocketError = (error) => {
+            console.error('Error with websocket', error);
+        };
+
+        stompClient.onStompError = (frame) => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+        };
+
+        function connect() {
+            stompClient.activate();
+        }
+        connect()
+    </script>
+
+</body>
+
+</html>

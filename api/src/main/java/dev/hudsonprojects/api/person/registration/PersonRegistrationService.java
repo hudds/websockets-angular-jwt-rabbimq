@@ -38,7 +38,7 @@ public class PersonRegistrationService {
             return registeredPerson.map(PersonDTO::new).get();
         }
         List<APIFieldError> errors = personValidationService.validate(person);
-        if(!errors.isEmpty()) {
+        if (!errors.isEmpty()) {
             throw new ValidationException(ErrorDetailsBuilder.withAPIFieldErrors(errors).build());
         }
         personRepository.save(person);

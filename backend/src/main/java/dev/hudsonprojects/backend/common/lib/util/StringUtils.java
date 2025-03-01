@@ -2,7 +2,9 @@ package dev.hudsonprojects.backend.common.lib.util;
 
 import java.text.Normalizer;
 
-public class StringUtils {
+public final class StringUtils {
+
+	private StringUtils() {}
 
 	public static String stripAccents(String s) {
 		s = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -34,5 +36,19 @@ public class StringUtils {
 			return 0;
 		}
 		return string.split("\\s+").length;
+	}
+
+	public static String removeLastCharacter(String string){
+		if(string == null || string.isEmpty()){
+			return string;
+		}
+		return string.substring(0, string.length()-1);
+	}
+
+	public static String removeFirstCharacter(String string){
+		if(string == null || string.isEmpty()){
+			return string;
+		}
+		return string.substring(1);
 	}
 }

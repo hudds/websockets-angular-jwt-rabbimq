@@ -2,26 +2,33 @@ package dev.hudsonprojects.api.security.credentials;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table( schema = "public", name = "credentials")
 public class Credentials {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "credentials_id")
     private Long credentialsId;
-    @Column(unique = true, nullable = false)
+    @Column(name = "identifier", unique = true, nullable = false)
     private String identifier;
-    @Column(nullable = false)
+    @Column(name = "credentials_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private CredentialsType credentialsType;
+    @Column(name = "password")
     private String password;
+
+    public Credentials() {
+    }
+
+    public Credentials(Credentials other) {
+        credentialsId = other.credentialsId;
+        identifier = other.identifier;
+        credentialsType = other.credentialsType;
+        password = other.password;
+    }
 
     public Long getCredentialsId() {
         return credentialsId;

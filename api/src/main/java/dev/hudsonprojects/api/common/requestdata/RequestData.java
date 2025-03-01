@@ -1,7 +1,6 @@
 package dev.hudsonprojects.api.common.requestdata;
 
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -17,6 +16,7 @@ public class RequestData {
 
 	private Locale locale;
 	private AppUserDetails user;
+	private Map<String, Object> properties = new HashMap<>();
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
@@ -38,4 +38,12 @@ public class RequestData {
 		return this.getUser().orElseThrow(() -> new UnauthorizedException(
 				ErrorDetailsBuilder.unauthorized().setMessage("user.notAuthenticated").build()));
 	}
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
 }

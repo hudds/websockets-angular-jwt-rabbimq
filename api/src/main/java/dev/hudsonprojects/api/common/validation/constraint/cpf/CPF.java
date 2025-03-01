@@ -14,8 +14,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface CPF {
-
-    String message() default "{validation.CPF.invalid}";
+    String message() default "validation.CPF.invalid";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

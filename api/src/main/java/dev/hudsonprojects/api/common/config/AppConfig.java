@@ -1,11 +1,20 @@
 package dev.hudsonprojects.api.common.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import dev.hudsonprojects.api.common.config.converter.InstantToStringConverter;
+import dev.hudsonprojects.api.common.config.converter.StringToInstantConverter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,11 +32,12 @@ import dev.hudsonprojects.api.common.config.converter.StringToOffsetDateTimeConv
 import dev.hudsonprojects.api.common.lib.Locales;
 import dev.hudsonprojects.api.security.login.AppUserDetailsService;
 
+import java.util.concurrent.Executor;
+
 @Configuration
+@EnableAsync
 public class AppConfig {
 
-
-	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -52,10 +62,6 @@ public class AppConfig {
 	@Bean
 	public WebMvcConfigurer webMvcConfigurer() {
 		return new WebMvcConfigurer() {
-//			@Override
-//			public void addCorsMappings(CorsRegistry registry) {
-//				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "DELETE", "OPTIONS");
-//			}
 			@Override
 			public void addInterceptors(@NonNull InterceptorRegistry registry) {
 				registry.addInterceptor(localeChangeInterceptor());
@@ -64,6 +70,8 @@ public class AppConfig {
 			public void addFormatters(@NonNull FormatterRegistry registry) {
 				registry.addConverter(new StringToOffsetDateTimeConverter());
 				registry.addConverter(new OffsetDateTimeToStringConverter());
+				registry.addConverter(new StringToInstantConverter());
+				registry.addConverter(new InstantToStringConverter());
 			}
 		};
 	}
@@ -92,6 +100,25 @@ public class AppConfig {
         return messageSource;
     }
 
+	@Bean
+	@Scope("prototype")
+	public ObjectMapper objectMapper(){
+		return JsonMapper.builder()
+				.findAndAddModules()
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+				.build();
+	}
 
+	@Bean
+	public Executor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(2);
+		executor.setMaxPoolSize(10);
+		executor.setQueueCapacity(10000);
+		executor.setThreadNamePrefix("wajr-api-");
+		executor.initialize();
+		return executor;
+	}
 
 }

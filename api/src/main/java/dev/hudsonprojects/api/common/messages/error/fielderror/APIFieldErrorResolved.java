@@ -1,5 +1,7 @@
 package dev.hudsonprojects.api.common.messages.error.fielderror;
 
+import dev.hudsonprojects.api.common.messages.error.APIMessageResolved;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,19 +13,21 @@ public class APIFieldErrorResolved implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private final String field;
-	private final Set<String> messages;
+	private final Set<APIMessageResolved> messages;
+
 	
-	public APIFieldErrorResolved(String field, Collection<String> messages) {
+	public APIFieldErrorResolved(String field, Collection<APIMessageResolved> messages) {
 		this.field = field;
 		this.messages = messages == null ?  Collections.emptySet() : Collections.unmodifiableSet(new LinkedHashSet<>(messages));
-	}
+
+    }
 	
 	
 	public String getField() {
 		return field;
 	}
 	
-	public Set<String> getMessages() {
+	public Set<APIMessageResolved> getMessages() {
 		return new LinkedHashSet<>(messages);
 	}
 

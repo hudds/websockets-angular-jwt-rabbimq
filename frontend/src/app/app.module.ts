@@ -17,12 +17,21 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatSnackBarModule} from '@angular/material/snack-bar'; 
 import { DashboardComponent } from './features/dashboard/pages/dashboard/dashboard.component';
+import { CourseComponent } from './features/dashboard/component/course/course.component';
+import { CourseListComponent } from './features/dashboard/component/course-list/course-list.component';
+import { TopbarComponent } from './common/component/topbar/topbar.component';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({ declarations: [
         AppComponent,
         LoginComponent,
         RegistrationComponent,
         DashboardComponent,
+        CourseComponent,
+        CourseListComponent,
+        TopbarComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
@@ -34,6 +43,9 @@ import { DashboardComponent } from './features/dashboard/pages/dashboard/dashboa
         MatCardModule,
         MatDatepickerModule,
         MatSnackBarModule,
+        MatIconModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
         MatNativeDateModule], providers: [
         MatDatepickerModule,
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },

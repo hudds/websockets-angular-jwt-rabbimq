@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, map, Observable, of, ReplaySubject, take, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SessionService } from './session.service';
 import { AuthenticationResponse } from '../types/authentication-response';
@@ -12,19 +12,22 @@ import { AuthenticationResponse } from '../types/authentication-response';
 export class ApiTokenService {
 
   private api = environment.api;
+  private refreshingToken = false;
+  private refreshTokenObservable = new ReplaySubject<string | null>(1);
 
   constructor(private sessionService : SessionService, private httpClient : HttpClient) { }
 
 
   public getBearerToken() : Observable <string | null> {
+    const operationId = new Date().getTime()
     let bearer = this.getBearertokenFromLocalStrorage()
     if(bearer == null){
       this.sessionService.sessionSubject.next({status:'UNAUTHENTICATED'})
       return of(null)
     }
     const decoded = jwtDecode(bearer);
-    if(decoded.exp && new Date().getTime() > decoded.exp){
-      return this.fetchNewToken()
+    if(decoded.exp && new Date().getTime() > decoded.exp *1000){
+      return this.fetchNewToken(operationId)
     }
     return of(this.getBearertokenFromLocalStrorage());
   }
@@ -33,13 +36,19 @@ export class ApiTokenService {
     return localStorage.getItem("bearerToken")
   }
 
-  private fetchNewToken() : Observable<string | null> {
-    const refreshToken = this.getRefreshToken()
+  private fetchNewToken(operationId :any) : Observable<string | null> {
+    if(this.refreshingToken){
+      return this.refreshTokenObservable.pipe(take(1));
+    }
+    this.refreshingToken = true;
+    this.refreshTokenObservable.complete();
+    this.refreshTokenObservable = new ReplaySubject(1);
+    let refreshToken = this.getRefreshToken()
     if(refreshToken == null){
       this.sessionService.sessionSubject.next({status:'UNAUTHENTICATED'})
       return of(null)
     }
-    return this.httpClient
+    this.httpClient
       .get<AuthenticationResponse>(`${this.api}/user/auth/refresh-token`, {headers:{"refresh-token":refreshToken}})
       .pipe(catchError(error => {
           if(error.status == 401){
@@ -48,7 +57,7 @@ export class ApiTokenService {
           }
           console.error(error)
           if(error.status && error.status > 500 && error.status < 600){
-            return throwError(() => new Error("Server error"))
+            return throwError(() => new Error("Server error. Status code: " + error.status))
           }
           return throwError(() => new Error("Unknown error"))
       }),
@@ -56,8 +65,12 @@ export class ApiTokenService {
         this.sessionService.sessionSubject.next({status:'AUTHENTICATED', user:authenticationResponse.user})
         this.setTokens(authenticationResponse)
         return this.getBearertokenFromLocalStrorage()
-      })
-    )
+      }),
+      finalize(() => this.refreshingToken = false)
+    ).subscribe(token => {
+      this.refreshTokenObservable.next(token)
+    })
+    return this.refreshTokenObservable.pipe(take(1));
   }
 
   public setTokens(authenticationResponse : AuthenticationResponse){
@@ -66,13 +79,12 @@ export class ApiTokenService {
   }
 
   private getRefreshToken(){
-      localStorage.getItem("refreshToken");
+    return localStorage.getItem("refreshToken");
   }
 
   private setRefreshToken(refreshToken : string) {
     localStorage.setItem("refreshToken", refreshToken) 
   }
-
 
   private setBearerToken(refreshToken : string) {
     localStorage.setItem("bearerToken", refreshToken) 

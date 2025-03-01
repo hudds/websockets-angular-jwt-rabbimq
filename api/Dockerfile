@@ -12,6 +12,6 @@ FROM eclipse-temurin:22 AS app
 
 WORKDIR /opt/app
 
-COPY --from=build /app/target/backend-api.jar .
+COPY --from=build /app/target/api.jar .
 
-ENTRYPOINT [ "java", "-jar",  "backend-api.jar"]
+ENTRYPOINT [ "java", "-jar",  "api.jar"]
