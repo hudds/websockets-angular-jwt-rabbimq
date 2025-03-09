@@ -1,9 +1,7 @@
-package dev.hudsonprojects.backend.course;
+package dev.hudsonprojects.backend.integration.coursesapi.course;
 
 import dev.hudsonprojects.backend.appuser.AppUserDTO;
 import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsResolved;
-import dev.hudsonprojects.backend.integration.coursesapi.course.CourseAPIService;
-import dev.hudsonprojects.backend.integration.coursesapi.course.CourseInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

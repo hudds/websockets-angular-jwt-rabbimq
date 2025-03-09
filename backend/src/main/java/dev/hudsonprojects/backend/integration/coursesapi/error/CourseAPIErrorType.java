@@ -1,4 +1,4 @@
-package dev.hudsonprojects.backend.integration.error;
+package dev.hudsonprojects.backend.integration.coursesapi.error;
 
 public enum CourseAPIErrorType {
 	/**

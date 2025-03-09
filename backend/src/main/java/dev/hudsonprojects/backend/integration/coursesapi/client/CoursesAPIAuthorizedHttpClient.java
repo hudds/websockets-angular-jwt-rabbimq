@@ -90,16 +90,6 @@ public class CoursesAPIAuthorizedHttpClient {
         return doRequest(HttpMethod.PATCH, expectedResponseType, httpRequest, integrationHttpProtocol);
     }
 
-
-
-
-
-
-
-
-
-
-
     public <T> T doPost(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest) throws CoursesAPIHttpException {
         return doPost(expectedResponseType, httpRequest, null);
     }
@@ -107,8 +97,6 @@ public class CoursesAPIAuthorizedHttpClient {
     public <T> T doPost(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest, IntegrationHttpProtocol integrationHttpProtocol) throws CoursesAPIHttpException {
         return doRequest(HttpMethod.POST, expectedResponseType, httpRequest, integrationHttpProtocol);
     }
-
-
 
     public <T> T doGet(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest) throws CoursesAPIHttpException {
         return doGet(expectedResponseType, httpRequest, null);
@@ -118,8 +106,6 @@ public class CoursesAPIAuthorizedHttpClient {
         return doRequest(HttpMethod.GET, expectedResponseType, httpRequest, integrationHttpProtocol);
     }
 
-
-
     public <T> T doPut(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest) throws CoursesAPIHttpException {
         return doPut(expectedResponseType, httpRequest, null);
     }
@@ -128,8 +114,6 @@ public class CoursesAPIAuthorizedHttpClient {
         return doRequest(HttpMethod.PUT, expectedResponseType, httpRequest, integrationHttpProtocol);
     }
 
-
-
     public <T> T doDelete(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest) throws CoursesAPIHttpException {
         return doDelete(expectedResponseType, httpRequest, null);
     }
@@ -137,8 +121,6 @@ public class CoursesAPIAuthorizedHttpClient {
     public <T> T doDelete(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest, IntegrationHttpProtocol integrationHttpProtocol) throws CoursesAPIHttpException {
         return doRequest(HttpMethod.DELETE, expectedResponseType, httpRequest, integrationHttpProtocol);
     }
-
-
 
     public <T> T doPatch(Class<T> expectedResponseType, CoursesAPIHttpRequest httpRequest) throws CoursesAPIHttpException {
         return doPatch(expectedResponseType, httpRequest, null);
@@ -183,8 +165,8 @@ public class CoursesAPIAuthorizedHttpClient {
     private String doRequest(HttpMethod httpMethod, CoursesAPIHttpRequest httpRequest, IntegrationHttpProtocol integrationHttpProtocol) throws CoursesAPIHttpException {
         String url = coursesAPIParameters.buildUrl(httpRequest);
         String requestBody = null;
-        if (httpRequest.getBody() instanceof String) {
-            requestBody = (String) httpRequest.getBody();
+        if (httpRequest.getBody() instanceof String stringBody) {
+            requestBody = stringBody;
         } else if (httpRequest.getBody() != null) {
             try {
                 requestBody = objectMapper.writer().writeValueAsString(httpRequest.getBody());
