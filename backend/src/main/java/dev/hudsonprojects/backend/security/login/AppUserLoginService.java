@@ -28,21 +28,13 @@ public class AppUserLoginService {
 		this.refreshTokenService = refreshTokenService;
 	}
 
-
-
-
 	@Transactional
 	public SuccessfulLoginDTO authenticate(LoginDTO login) {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getCpfOrEmail(), login.getPassword()));
 		AppUser appUser = appUserDetailsService.findAppUserByEmailOrCpf(login.getCpfOrEmail()).orElseThrow(() -> new UnauthorizedException(null));
 		String accessToken = jwtService.generateToken(new AppUserDetails(appUser));
 		RefreshToken refreshToken = refreshTokenService.createRefreshTokenFamily(appUser);
-		return new SuccessfulLoginDTO(appUser, refreshToken, accessToken);
+		return new SuccessfulLoginDTO(appUser, refreshToken, accessToken, refreshToken.getRefreshTokenFamily().getUserNotificationTokenEntity().getToken());
 	}
 
-
-	
-
-	
-	
 }

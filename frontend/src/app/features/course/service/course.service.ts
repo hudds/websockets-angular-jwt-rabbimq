@@ -1,11 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, mergeMap, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, mergeMap, Observable } from 'rxjs';
 import { Course } from 'src/app/common/types/course';
 import { environment } from 'src/environments/environment';
 import { ApiTokenService } from '../../security/service/api-token.service';
 import { SessionService } from '../../security/service/session.service';
-import { Client } from '@stomp/stompjs';
+import { Client, StompHeaders } from '@stomp/stompjs';
+import { UserNotificationService } from 'src/app/common/service/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,55 +15,9 @@ export class CourseService {
 
   private apiHost = environment.apiHost
 
-  private readonly _courseSubject = new BehaviorSubject<Course | null>(null);
-
-  private client?: Client
-
-  constructor(private httpClient: HttpClient, private tokenService: ApiTokenService, private sessionService: SessionService) {
-    sessionService.sessionSubject.subscribe(session => {
-      if (session?.status == 'AUTHENTICATED' && !this.client?.connected) {
-        this.connectToCourseTopic()
-      } else if (session?.status == 'UNAUTHENTICATED') {
-        this.disconnectFromCourseTopic()
-      }
-    })
-    if(sessionService.getSessionStatus()?.status == 'AUTHENTICATED' && !this.client?.connected){
-      this.connectToCourseTopic()
-    }
+  constructor(private httpClient: HttpClient, private tokenService: ApiTokenService, private notificationService : UserNotificationService) {
+  
   }
-
-  disconnectFromCourseTopic() {
-    this.client?.deactivate()
-    this.client = undefined
-  }
-  connectToCourseTopic() {
-    this.disconnectFromCourseTopic()
-    console.log("stating stomp connection")
-    this.tokenService.getBearerToken().subscribe(token => {
-      let client = new Client({
-        brokerURL: `ws://${this.apiHost}/events`,
-        connectHeaders: {
-          Authorization: `Bearer ${token}`
-        },
-        onConnect: () => {
-          console.log("connected stomp")
-          client.subscribe('/topic/course', message => {
-            console.log(`Received course: ${message.body}`)
-            this._courseSubject.next(JSON.parse(message.body))
-          });
-        },
-        onStompError: (e) => {
-          console.log("stomp Error", e)
-        },
-        onWebSocketError: () => {
-          console.log("WebSocketError")
-        }
-      })
-      client.activate()
-      this.client = client;
-    });
-  }
-
 
   public getCourses(pageNumber?: number, pageSize?: number): Observable<Course[]> {
     let params = new HttpParams()
@@ -85,9 +40,6 @@ export class CourseService {
   }
 
   get courseSubject() : BehaviorSubject<Course | null>{
-    if(!this.client?.connected){
-      this.connectToCourseTopic()
-    }
-    return this._courseSubject;
+    return this.notificationService.courseSubject;
   }
 }

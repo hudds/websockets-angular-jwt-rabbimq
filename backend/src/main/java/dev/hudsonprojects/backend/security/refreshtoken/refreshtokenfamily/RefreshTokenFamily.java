@@ -1,24 +1,13 @@
 package dev.hudsonprojects.backend.security.refreshtoken.refreshtokenfamily;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+import dev.hudsonprojects.backend.appuser.notification.token.entity.UserNotificationTokenEntity;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import dev.hudsonprojects.backend.appuser.AppUser;
-import dev.hudsonprojects.backend.security.refreshtoken.RefreshToken;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name="refresh_token_family")
@@ -37,6 +26,8 @@ public class RefreshTokenFamily {
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 	private boolean invalidated;
+	@OneToOne(mappedBy = "refreshTokenFamily", fetch = FetchType.LAZY)
+	private UserNotificationTokenEntity userNotificationTokenEntity;
 	
 	public boolean isInvalidated() {
 		return invalidated;
@@ -48,7 +39,7 @@ public class RefreshTokenFamily {
 	public void setInvalidated(boolean invalidated) {
 		this.invalidated = invalidated;
 	}
-	public Long getRefreshTokenFalilyId() {
+	public Long getRefreshTokenFamilyId() {
 		return refreshTokenFamilyId;
 	}
 	public void setRefreshTokenFalilyId(Long refreshTokenFalilyId) {
@@ -67,7 +58,21 @@ public class RefreshTokenFamily {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-	
-	
-	
+
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public UserNotificationTokenEntity getUserNotificationTokenEntity() {
+        return userNotificationTokenEntity;
+    }
+
+    public void setUserNotificationTokenEntity(UserNotificationTokenEntity userNotificationTokenEntity) {
+        this.userNotificationTokenEntity = userNotificationTokenEntity;
+    }
 }

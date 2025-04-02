@@ -1,22 +1,23 @@
 package dev.hudsonprojects.backend.integration.coursesapi.course.webhook.event;
 
+import dev.hudsonprojects.backend.appuser.notification.UserNotificationService;
+import dev.hudsonprojects.backend.appuser.notification.UserNotificationTopicName;
 import dev.hudsonprojects.backend.integration.coursesapi.course.CourseInfoDTO;
 import dev.hudsonprojects.backend.integration.coursesapi.course.webhook.exchange.CourseApiEventExchangeSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CourseApiEventService {
 
     private final CourseApiEventExchangeSender exchangeSender;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final UserNotificationService userNotificationService;
 
 
     @Autowired
-    public CourseApiEventService(CourseApiEventExchangeSender exchangeSender, SimpMessagingTemplate messagingTemplate) {
+    public CourseApiEventService(CourseApiEventExchangeSender exchangeSender, UserNotificationService userNotificationService) {
         this.exchangeSender = exchangeSender;
-        this.messagingTemplate = messagingTemplate;
+        this.userNotificationService = userNotificationService;
     }
 
     public void sendEvent(CourseInfoDTO courseInfoDTO){
@@ -25,7 +26,7 @@ public class CourseApiEventService {
 
 
     public void publishMessage(CourseInfoDTO courseInfoDTO){
-        messagingTemplate.convertAndSend("/topic/course", courseInfoDTO);
+        userNotificationService.sendGlobalNotification(UserNotificationTopicName.COURSE_UPDATE, courseInfoDTO);
     }
 
 

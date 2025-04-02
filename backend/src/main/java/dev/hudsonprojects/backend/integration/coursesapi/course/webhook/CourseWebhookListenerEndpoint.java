@@ -1,17 +1,21 @@
 package dev.hudsonprojects.backend.integration.coursesapi.course.webhook;
 
+import dev.hudsonprojects.backend.common.exception.UnauthorizedException;
+import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsBuilder;
 import dev.hudsonprojects.backend.integration.coursesapi.course.CourseInfoDTO;
 import dev.hudsonprojects.backend.integration.coursesapi.course.webhook.event.CourseApiEventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping(CourseWebhookSubscriberService.WEBHOOK_LISTENER_COURSE_URI)
 public class CourseWebhookListenerEndpoint {
 
+    @Value("${integration.courses_api.webhook.course.token}")
+    private String token;
     private final CourseApiEventService courseApiEventService;
 
     @Autowired
@@ -20,7 +24,10 @@ public class CourseWebhookListenerEndpoint {
     }
 
     @PostMapping
-    public void listen(@RequestBody CourseInfoDTO courseInfoDTO){
+    public void listen(@RequestBody CourseInfoDTO courseInfoDTO, @RequestHeader("token") String token){
+        if(!Objects.equals(this.token, token)){
+            throw new UnauthorizedException(ErrorDetailsBuilder.unauthorized().build());
+        }
         courseApiEventService.sendEvent(courseInfoDTO);
     }
 }

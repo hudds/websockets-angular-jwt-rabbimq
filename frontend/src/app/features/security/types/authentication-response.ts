@@ -4,4 +4,5 @@ export interface AuthenticationResponse{
     user: AppUser
     accessToken: string
     refreshToken: string
+    userNotificationToken: string
 }

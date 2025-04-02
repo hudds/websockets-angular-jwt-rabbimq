@@ -1,16 +1,8 @@
 package dev.hudsonprojects.backend.integration.coursesapi.subscription;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.hudsonprojects.backend.common.exception.APIErrorType;
-import dev.hudsonprojects.backend.common.exception.APIMessageException;
-import dev.hudsonprojects.backend.common.exception.InternalErrorException;
-import dev.hudsonprojects.backend.common.exception.ValidationException;
-import dev.hudsonprojects.backend.common.lib.util.StringUtils;
-import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetails;
-import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsBuilder;
 import dev.hudsonprojects.backend.integration.coursesapi.client.CoursesAPIAuthorizedHttpClient;
 import dev.hudsonprojects.backend.integration.coursesapi.client.CoursesAPIHttpRequest;
-import dev.hudsonprojects.backend.integration.coursesapi.error.ErrorDetailsAdapter;
 import dev.hudsonprojects.backend.integration.coursesapi.exception.CoursesAPIHttpException;
 import dev.hudsonprojects.backend.integration.protocol.IntegrationHttpProtocol;
 import dev.hudsonprojects.backend.integration.protocol.IntegrationHttpProtocolRepository;
@@ -18,11 +10,10 @@ import dev.hudsonprojects.backend.integration.protocol.IntegrationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class SubscriptionAPIClient {
@@ -47,6 +38,7 @@ public class SubscriptionAPIClient {
             SubscriptionDTO subscriptionCreated = client.doPost(SubscriptionDTO.class, CoursesAPIHttpRequest.builder()
                     .setPath("subscription")
                     .setBody(subscription)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .build(), protocol);
             protocol.setIntegrationStatus(IntegrationStatus.SUCCESS);
             integrationHttpProtocolRepository.save(protocol);

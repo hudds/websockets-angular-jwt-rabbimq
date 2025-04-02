@@ -1,5 +1,6 @@
 package dev.hudsonprojects.backend.security.refreshtoken;
 
+import dev.hudsonprojects.backend.security.refreshtoken.refreshtokenfamily.RefreshTokenFamilyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,27 +23,26 @@ public class RefreshTokenService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final RefreshTokenFamilyRepository refreshTokenFamilyRepository;
 	private final JwtService jwtService;
+	private final RefreshTokenFamilyService refreshTokenFamilyService;
 	
 	
 
 	public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
-			RefreshTokenFamilyRepository refreshTokenFamilyRepository, JwtService jwtService) {
+                               RefreshTokenFamilyRepository refreshTokenFamilyRepository, JwtService jwtService, RefreshTokenFamilyService refreshTokenFamilyService) {
 		this.refreshTokenRepository = refreshTokenRepository;
 		this.refreshTokenFamilyRepository = refreshTokenFamilyRepository;
 		this.jwtService = jwtService;
-	}
+        this.refreshTokenFamilyService = refreshTokenFamilyService;
+    }
 
 	@Transactional
 	public RefreshToken createRefreshTokenFamily(AppUser appUser) {
-		RefreshTokenFamily refreshTokenFamily = new RefreshTokenFamily();
-		refreshTokenFamily.setAppUser(appUser);
-		refreshTokenFamilyRepository.save(refreshTokenFamily);
+
+		RefreshTokenFamily refreshTokenFamily = refreshTokenFamilyService.create(appUser);
 		RefreshToken refreshToken = new RefreshToken();
 		refreshToken.setRefreshTokenFamily(refreshTokenFamily);
 		refreshToken.setToken(generateRandomToken());
 		refreshTokenRepository.save(refreshToken);
-		
-		
 		return refreshToken;
 	}
 
@@ -54,8 +54,7 @@ public class RefreshTokenService {
 				.orElseThrow(() -> new UnauthorizedException(ErrorDetailsBuilder.buildWithMessage("authentication.refreshtoken.invalid")));
 		
 		if(refreshToken.isInvalidated()) {
-			refreshToken.getRefreshTokenFamily().setInvalidated(true);
-			refreshTokenFamilyRepository.save(refreshToken.getRefreshTokenFamily());
+			refreshTokenFamilyService.invalidate(refreshToken.getRefreshTokenFamily());
 			return null;
 		}
 		RefreshToken newRefreshToken = new RefreshToken();
@@ -66,7 +65,7 @@ public class RefreshTokenService {
 		refreshTokenRepository.save(refreshToken);
 		AppUser appUser = newRefreshToken.getAppUser();
 		String accessToken = jwtService.generateToken(new AppUserDetails(appUser));
-		return new SuccessfulLoginDTO(appUser, newRefreshToken, accessToken);
+		return new SuccessfulLoginDTO(appUser, newRefreshToken, accessToken, refreshToken.getRefreshTokenFamily().getUserNotificationTokenEntity().getToken());
 	}
 	
 	
@@ -81,9 +80,6 @@ public class RefreshTokenService {
 			.filter(RefreshToken::isNotInvalidated)
 			.map(RefreshToken::getRefreshTokenFamily)
 			.filter(RefreshTokenFamily::isNotInvalidated)
-			.ifPresent(tokenFamily -> {
-				tokenFamily.setInvalidated(true);
-				this.refreshTokenFamilyRepository.save(tokenFamily);
-			});
+			.ifPresent(refreshTokenFamilyService::invalidate);
 	}
 }

@@ -56,8 +56,6 @@ public class UserRegistrationService {
             );
         }
 
-       
-        
         appUser.setUsername(generateUsername(appUser.getName()));
         appUser.getCredentials().setIdentifier(appUser.getUsername());
         appUser.getCredentials().setCredentialsType(CredentialsType.USER);

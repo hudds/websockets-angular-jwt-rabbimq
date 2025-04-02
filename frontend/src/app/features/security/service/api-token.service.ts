@@ -27,7 +27,7 @@ export class ApiTokenService {
     }
     const decoded = jwtDecode(bearer);
     if(decoded.exp && new Date().getTime() > decoded.exp *1000){
-      return this.fetchNewToken(operationId)
+      return this.fetchNewToken()
     }
     return of(this.getBearertokenFromLocalStrorage());
   }
@@ -36,7 +36,7 @@ export class ApiTokenService {
     return localStorage.getItem("bearerToken")
   }
 
-  private fetchNewToken(operationId :any) : Observable<string | null> {
+  private fetchNewToken() : Observable<string | null> {
     if(this.refreshingToken){
       return this.refreshTokenObservable.pipe(take(1));
     }
@@ -76,6 +76,7 @@ export class ApiTokenService {
   public setTokens(authenticationResponse : AuthenticationResponse){
     this.setBearerToken(authenticationResponse.accessToken)
     this.setRefreshToken(authenticationResponse.refreshToken)
+    this.setUserNotificationToken(authenticationResponse.userNotificationToken);
   }
 
   private getRefreshToken(){
@@ -88,6 +89,15 @@ export class ApiTokenService {
 
   private setBearerToken(refreshToken : string) {
     localStorage.setItem("bearerToken", refreshToken) 
+  }
+
+
+  private setUserNotificationToken(userNotificationToken : string) {
+    localStorage.setItem("userNotificationToken", userNotificationToken) 
+  }
+
+  public getUserNotificationToken() : string | null {
+    return localStorage.getItem("userNotificationToken")
   }
 
 }

@@ -9,12 +9,14 @@ public class SuccessfulLoginDTO {
 	private AppUserDTO user;
 	private String accessToken;
 	private String refreshToken;
+	private String userNotificationToken;
 	
 	
-	public SuccessfulLoginDTO(AppUser appUser, RefreshToken refreshToken, String accessToken) {
+	public SuccessfulLoginDTO(AppUser appUser, RefreshToken refreshToken, String accessToken, String userNotificationToken) {
 		this.user = new AppUserDTO(appUser);
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken.getToken();
+		this.userNotificationToken = userNotificationToken;
 	}
 	
 	public AppUserDTO getUser() {
@@ -35,6 +37,12 @@ public class SuccessfulLoginDTO {
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
-	
-	
+
+    public String getUserNotificationToken() {
+        return userNotificationToken;
+    }
+
+    public void setUserNotificationToken(String userNotificationToken) {
+        this.userNotificationToken = userNotificationToken;
+    }
 }

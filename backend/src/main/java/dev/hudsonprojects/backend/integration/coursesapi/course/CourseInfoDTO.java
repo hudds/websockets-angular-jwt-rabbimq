@@ -1,7 +1,11 @@
 package dev.hudsonprojects.backend.integration.coursesapi.course;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.hudsonprojects.backend.integration.coursesapi.subscription.status.SubscriptionStatus;
+
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CourseInfoDTO {
 
     private Long courseId;
@@ -12,6 +16,7 @@ public class CourseInfoDTO {
     private Long subscriptionCount;
     private Boolean subscribed;
     private LocalDateTime latestSubscription;
+    private SubscriptionStatus.Status subscriptionStatus;
 
     public Long getCourseId() {
         return courseId;
@@ -75,5 +80,13 @@ public class CourseInfoDTO {
 
     public void setLatestSubscription(LocalDateTime latestSubscription) {
         this.latestSubscription = latestSubscription;
+    }
+
+    public void setSubscriptionStatus(SubscriptionStatus.Status subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+    }
+
+    public SubscriptionStatus.Status getSubscriptionStatus() {
+        return subscriptionStatus;
     }
 }

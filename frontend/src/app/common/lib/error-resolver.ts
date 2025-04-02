@@ -6,7 +6,10 @@ export class AppErrorHandler {
 
     public readonly expectedApiErrors : APIErrorType[] = [APIErrorType.VALIDATION_ERROR];
 
-    constructor(private _snackBar : MatSnackBar, private formService : FormService){  }
+    showFieldErrorAsMessage : boolean = false
+
+    constructor(private _snackBar : MatSnackBar, private formService? : FormService){  }
+
     handle(error:any){
         if(isAPIError(error)){
             this.handleAPIError(error)
@@ -22,7 +25,15 @@ export class AppErrorHandler {
     }
 
     private handleAPIError(error : APIError){
-        this.formService.populateAPIFieldErrors(error);
+        if(this.formService){
+            this.formService.populateAPIFieldErrors(error);
+        } else if(this.showFieldErrorAsMessage && error.fieldErrors){
+            let messages = new Set<string>();
+            error.fieldErrors
+                .flatMap(fError => fError.messages)
+                .forEach(message => messages.add(message));
+            messages.forEach(message => this._snackBar.open(message, "Ok", {}))
+        }
         if(this.expectedApiErrors.includes(error.type) && error.message){
             this._snackBar.open(error.message, "Ok", {})
             return;

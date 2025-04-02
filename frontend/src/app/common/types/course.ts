@@ -1,4 +1,6 @@
-export interface Course{
+import { SubscriptionStatusValue } from "src/app/features/subscription/types/subscription";
+
+export interface Course {
     courseId:number;
     name:string;
     slots:number;
@@ -7,6 +9,34 @@ export interface Course{
     subscriptionCount:number;
     subscribed?:boolean;
     latestSubscription?:string;
+    subscriptionStatus?:SubscriptionStatusValue
+}
+
+export function isCourse(value: any): value is Course {
+    if (typeof value !== 'object' || value === null) {
+        return false;
+    }
+
+    if (
+        typeof value.courseId !== 'number' ||
+        typeof value.name !== 'string' ||
+        typeof value.slots !== 'number' ||
+        typeof value.subscriptionCount !== 'number'
+    ) {
+        return false;
+    }
+
+    if (
+        value.createdAt !== undefined && typeof value.createdAt !== 'string' ||
+        value.updatedAt !== undefined && typeof value.updatedAt !== 'string' ||
+        value.subscribed !== undefined && typeof value.subscribed !== 'boolean' ||
+        value.latestSubscription !== undefined && typeof value.latestSubscription !== 'string' ||
+        value.subscriptionStatus !== undefined && !Object.values(SubscriptionStatusValue).includes(value.subscriptionStatus)
+    ) {
+        return false;
+    }
+
+    return true;
 }
 
 

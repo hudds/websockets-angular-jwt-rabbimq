@@ -1,9 +1,13 @@
 package dev.hudsonprojects.backend.appuser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDate;
 
 public class AppUserDTO {
 
+	@JsonIgnore
+	private Long userId;
 	private String username;
 	private String email;
 	private String name;
@@ -11,6 +15,7 @@ public class AppUserDTO {
 	private String cpf;
 	
 	public AppUserDTO(AppUser appUser) {
+		this.userId = appUser.getUserId();
 		this.username = appUser.getUsername();
 		this.email = appUser.getEmail();
 		this.name = appUser.getName();
@@ -57,8 +62,13 @@ public class AppUserDTO {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
-	
-	
-	
 
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }

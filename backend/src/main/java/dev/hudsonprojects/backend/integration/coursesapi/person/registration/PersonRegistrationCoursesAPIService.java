@@ -3,7 +3,9 @@ package dev.hudsonprojects.backend.integration.coursesapi.person.registration;
 import dev.hudsonprojects.backend.appuser.AppUserRepository;
 import dev.hudsonprojects.backend.appuser.integration.AppUserIntegrationProtocol;
 import dev.hudsonprojects.backend.appuser.integration.AppUserIntegrationProtocolRepository;
+import dev.hudsonprojects.backend.appuser.integration.coursesapi.PersonDTO;
 import dev.hudsonprojects.backend.integration.coursesapi.exception.CoursesAPIHttpException;
+import dev.hudsonprojects.backend.integration.coursesapi.person.PersonCoursesAPIClient;
 import dev.hudsonprojects.backend.integration.coursesapi.person.registration.exception.CoursesAPIPersonRegistrationException;
 import dev.hudsonprojects.backend.integration.coursesapi.person.registration.queue.PersonRegistrationQueueSender;
 import dev.hudsonprojects.backend.appuser.registration.event.AppUserCreated;
@@ -19,6 +21,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class PersonRegistrationCoursesAPIService {
@@ -30,14 +33,16 @@ public class PersonRegistrationCoursesAPIService {
     private final PersonRegistrationQueueSender personRegistrationQueueSender;
 
     private final PersonRegistrationCoursesAPIClient personRegistrationCoursesAPIClient;
+    private final PersonCoursesAPIClient personCoursesAPIClient;
 
     @Autowired
-    public PersonRegistrationCoursesAPIService(AppUserRepository appUserRepository, IntegrationHttpProtocolRepository integrationHttpProtocolRepository, AppUserIntegrationProtocolRepository appUserIntegrationProtocolRepository, PersonRegistrationQueueSender personRegistrationQueueSender, PersonRegistrationCoursesAPIClient personRegistrationCoursesAPIClient) {
+    public PersonRegistrationCoursesAPIService(AppUserRepository appUserRepository, IntegrationHttpProtocolRepository integrationHttpProtocolRepository, AppUserIntegrationProtocolRepository appUserIntegrationProtocolRepository, PersonRegistrationQueueSender personRegistrationQueueSender, PersonRegistrationCoursesAPIClient personRegistrationCoursesAPIClient, PersonCoursesAPIClient personCoursesAPIClient) {
         this.appUserRepository = appUserRepository;
         this.integrationHttpProtocolRepository = integrationHttpProtocolRepository;
         this.appUserIntegrationProtocolRepository = appUserIntegrationProtocolRepository;
         this.personRegistrationQueueSender = personRegistrationQueueSender;
         this.personRegistrationCoursesAPIClient = personRegistrationCoursesAPIClient;
+        this.personCoursesAPIClient = personCoursesAPIClient;
     }
 
     @Async
@@ -55,7 +60,18 @@ public class PersonRegistrationCoursesAPIService {
                 .ifPresent(personRegistrationQueueSender::send);
     }
 
-    @Transactional
+    public void registerUserByCpfIfNotRegistered(String cpf) throws CoursesAPIHttpException {
+        Optional<PersonDTO> personRegistered = personCoursesAPIClient.getByCpf(cpf);
+        if (personRegistered.isPresent()) {
+            return;
+        }
+        Optional<PersonRegistrationDTO> personRegistrationDTO = appUserRepository.findByCpf(cpf)
+                .map(PersonRegistrationDTO::new);
+        if (personRegistrationDTO.isPresent()) {
+            register(personRegistrationDTO.get());
+        }
+    }
+
     public void register(PersonRegistrationDTO personRegistrationDTO) throws CoursesAPIHttpException {
         IntegrationHttpProtocol protocol = new IntegrationHttpProtocol();
         protocol.setIntegrationStatus(IntegrationStatus.PENDING);

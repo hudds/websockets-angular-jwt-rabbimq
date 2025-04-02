@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @Tag(name = "User")
@@ -35,5 +36,10 @@ public class AppUserEndpoint {
 	public AppUserDTO info() {
 		return appUserService.getLoggedUser();
 	}
+
+//	@GetMapping("notifications")
+//	public SseEmitter nofitifications(){
+//
+//	}
 
 }

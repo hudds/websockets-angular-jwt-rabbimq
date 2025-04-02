@@ -4,7 +4,7 @@
         <mat-card-subtitle>Vagas: {{vacancies}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-actions>
-        <div *ngIf="course?.subscribed">Inscrito</div>
-        <button *ngIf="!(course?.subscribed)" mat-button disabled="{{vacancies == 0}}">Inscreva-se</button>
+        <div *ngIf="shouldRenderStatus()">{{getStatus()}}</div>
+        <button *ngIf="shouldRenderSubscribeButton()" (click)="subscribe()" mat-button disabled="{{vacancies == 0}}">Inscreva-se</button>
     </mat-card-actions>
 </mat-card>
