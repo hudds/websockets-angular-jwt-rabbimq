@@ -28,9 +28,6 @@ export class CourseListComponent implements OnInit {
         this.updateCourse(course)
       }
     })
-    this.sseNotificationService.sseNotificationSubject.subscribe(notification => {
-      console.log(`Course list received SSE notification. ${notification?.data}`)
-    })
   }
 
   updateCourse(courseUpdated: Course) {

@@ -36,6 +36,7 @@ public class UserNotificationTokenService {
         notificationToken.setValid(true);
         notificationToken.setRefreshTokenFamily(refreshTokenFamily);
         repository.save(notificationToken);
+        refreshTokenFamily.setUserNotificationTokenEntity(notificationToken);
         return notificationToken;
     }
 }

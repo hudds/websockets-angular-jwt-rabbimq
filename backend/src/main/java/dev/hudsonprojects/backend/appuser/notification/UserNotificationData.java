@@ -4,9 +4,12 @@ import java.util.Objects;
 
 public class UserNotificationData {
 
-    private final Long userId;
-    private final UserNotificationTopicName topic;
-    private final Object content;
+    private Long userId;
+    private UserNotificationTopicName topic;
+    private Object content;
+
+    public UserNotificationData() {
+    }
 
     private UserNotificationData(Builder builder){
         this.userId = builder.userId;
@@ -14,12 +17,26 @@ public class UserNotificationData {
         this.content = builder.message;
     }
 
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
+
+    public void setTopic(UserNotificationTopicName topic) {
+        this.topic = topic;
+    }
+
     public UserNotificationTopicName getTopic() {
         return topic;
+    }
+
+
+    public void setContent(Object content) {
+        this.content = content;
     }
 
     public Object getContent() {

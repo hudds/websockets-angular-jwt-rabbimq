@@ -21,9 +21,6 @@ public class UserNotificationService {
     }
 
     public void sendNotification(Long userId, UserNotificationTopicName eventName, Object message) {
-        if(userId == null){
-            return;
-        }
         sender.send(UserNotificationData.builder()
                 .setUserId(userId)
                 .setMessage(message)
@@ -49,10 +46,10 @@ public class UserNotificationService {
     }
 
     private static String getDestination(UserNotificationData userNotification){
-        return userNotification.getUserId() == null ? "global" : getUserKey(userNotification.getUserId());
+        return userNotification.getUserId() == null ? "notification/global" : getUserKey(userNotification.getUserId());
     }
 
     private static String getUserKey(Long userId) {
-        return "user/id/" + userId;
+        return "notification/user/id/" + userId;
     }
 }

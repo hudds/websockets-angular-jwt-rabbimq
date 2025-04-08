@@ -4,8 +4,8 @@ export interface UserNotification {
 }
 
 export enum UserNotificationTopic {
-    SUBSCRIPTION_UPDATE,
-    COURSE_UPDATE
+    SUBSCRIPTION_UPDATE = 'SUBSCRIPTION_UPDATE',
+    COURSE_UPDATE = 'COURSE_UPDATE'
 }
 
 export function isUserNotification(value: any): value is UserNotification {
@@ -17,8 +17,8 @@ export function isUserNotification(value: any): value is UserNotification {
         return false;
     }
 
-    if (!Object.values(UserNotificationTopic).includes(value.topic)) {
-        return false;
+    if (typeof value.topic !== 'string' || !Object.values(UserNotificationTopic).includes(value.topic as UserNotificationTopic)) {
+      return false;
     }
 
     return true;

@@ -1,6 +1,9 @@
 package dev.hudsonprojects.backend.common.config;
 
 import dev.hudsonprojects.backend.security.JwtService;
+import dev.hudsonprojects.backend.security.notification.NotificationSecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -16,16 +19,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
-    private final JwtService jwtService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketConfig.class);
 
-    public WebsocketConfig(JwtService jwtService) {
-        this.jwtService = jwtService;
+    private final NotificationSecurityService notificationSecurityService;
+
+    public WebsocketConfig(NotificationSecurityService notificationSecurityService) {
+        this.notificationSecurityService = notificationSecurityService;
     }
 
     @Override
@@ -44,29 +50,33 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                    StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                    if(accessor == null){
-                        return message;
-                    }
-                    if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                        System.out.println("token: "+ accessor.getHeader("token"));
-                        // TODO implementar a verificação de token
-//                        Map<String, List<Object>> nativeHeaders = (Map<String, List<Object>>) message.getHeaders();
-//                        String authorization = String.valueOf(nativeHeaders.get("Authorization").get(0));
-//                        authorization = authorization.substring("Bearer ".length());
-
-                    } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-//                            String destination = accessor.getDestination();
-//                            String username = accessor.getUser().getName();
-//                            String prefix = "/notification/user/";
-//                            if (destination != null && destination.startsWith(prefix)) {
-//                                String targetUserId = destination.substring(prefix.length());
-//                                if (!username.equals(targetUserId)) {
-//                                    throw new SecurityException("User " + username + " is not authorized to subscribe to " + destination);
-//                                }
-//                            }
-                        }
+                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                if (accessor == null) {
                     return message;
+                }
+                String destination = accessor.getDestination();
+                if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+                    if (destination == null) {
+                        throw new IllegalArgumentException("destination is null");
+                    }
+                    String token = Optional.ofNullable(accessor.getNativeHeader("token"))
+                            .filter(values -> !values.isEmpty())
+                            .map(List::getFirst)
+                            .map(String::valueOf)
+                            .orElse(null);
+                    try {
+                        if (destination.startsWith("/notification/user/")) {
+                            String username = destination.substring("/notification/user/".length());
+                            notificationSecurityService.validateToken(token, username);
+                        } else {
+                            notificationSecurityService.validateToken(token);
+                        }
+                    } catch (RuntimeException e){
+                        LOGGER.error("WebSocket error", e);
+                        throw e;
+                    }
+                }
+                return message;
             }
         });
     }

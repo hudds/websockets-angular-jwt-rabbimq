@@ -79,4 +79,11 @@ public class WebhookService {
         Long ownerId = requestData.getUserOrUnauthorized().getUserId();
         webhookTopicRepository.deleteByTopicAndOwnerIdAndNotWebhookId(topic, ownerId, webhookId);
     }
+
+    @Transactional(readOnly = true)
+    public List<WebhookDTO> getWebhooksFromUser() {
+        Long userId = requestData.getUserOrUnauthorized().getUserId();
+        List<Webhook> webhooks =  webhookRepository.findByOwnerId(userId);
+        return webhooks.stream().map(WebhookDTO::new).toList();
+    }
 }

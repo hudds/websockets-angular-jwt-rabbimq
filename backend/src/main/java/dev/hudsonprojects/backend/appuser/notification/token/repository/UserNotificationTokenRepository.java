@@ -22,8 +22,11 @@ public interface UserNotificationTokenRepository extends JpaRepository<UserNotif
     @Transactional
     @Query("""
             UPDATE UserNotificationTokenEntity userToken
-                SET userToken.valid = false, userToken.updatedAt = NOW()
+                SET userToken.valid = false, userToken.updatedAt = CURRENT_TIMESTAMP
                 WHERE userToken.refreshTokenFamilyId = :refreshTokenFamilyId AND userToken.valid
             """)
     void invalidateByRefreshTokenFamilyId(@Param("refreshTokenFamilyId") Long refreshTokenFamilyId);
+
+    boolean existsByTokenAndValidIsTrue(String token);
+
 }
