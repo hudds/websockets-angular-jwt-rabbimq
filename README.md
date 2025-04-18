@@ -5,13 +5,6 @@
 
 Necessário ter apenas o docker installado
 
-## Configurando o frontend
-
-1. Acesse a pasta `frontend/src/environments`
-2. Copie o arquivo `environment.docker.ts.example` para outro arquivo chamado `environment.docker.ts`: `cp environment.docker.ts.example environment.docker.ts`
-3. Abra o arquivo `environment.docker.ts`
-4. Substitua o IP 192.168.0.105 pelo IP da sua máquina na sua rede local 
-
 ## Build e Execução
 
 ### Sistemas LINUX
@@ -36,3 +29,12 @@ docker build -t hudsonprojects/wajr-frontend ./frontend
 ```
 
 Depois acesse a pasta docker e rode o comando `docker compose up`
+
+## Acessando a aplicação
+Acesse http://localhost:4200/ para acessar o frontend.
+Acesse http://localhost:8080/swagger-ui/index.html para ver a documentação da api do frontend.
+Acesse http://localhost:8081/swagger-ui/index.html para ver a documentação da api da API de Cursos.
+
+O usuário e senha padrão da API de Cursos é definido no arquivo `docker/.env` nas propriedades `API_USER_DEFAULT_USERNAME` e `API_USER_DEFAULT_PASSWORD`
+
+Para aparecer algum curso na dashboard é necessário cadastrar um curso diretamente na API de Cursos.
