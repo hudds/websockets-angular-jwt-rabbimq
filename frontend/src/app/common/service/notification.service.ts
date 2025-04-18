@@ -145,6 +145,6 @@ export class UserNotificationService {
 
   get subscriptionStatusSubject() {
     this.connect();
-    return this._courseSubject;
+    return this._subscriptionStatusSubject;
   }
 }

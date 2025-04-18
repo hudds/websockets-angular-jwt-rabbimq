@@ -14,10 +14,10 @@ export interface SubscriptionStatus {
 
 
 export enum SubscriptionStatusValue{
-    PENDING,
-    SUCCESS,
-    CANCELED,
-    ERROR
+    PENDING = 'PENDING',
+    SUCCESS= 'SUCCESS',
+    CANCELED='CANCELED',
+    ERROR='ERROR'
 }
 
 

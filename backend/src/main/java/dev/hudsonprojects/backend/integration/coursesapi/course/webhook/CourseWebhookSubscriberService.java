@@ -8,8 +8,7 @@ import dev.hudsonprojects.backend.integration.protocol.IntegrationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,30 +34,50 @@ public class CourseWebhookSubscriberService {
         this.integrationHttpProtocolRepository = integrationHttpProtocolRepository;
     }
 
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void subscribeCourseTopic() throws CoursesAPIHttpException {
+    @Async
+    public void subscribeCourseTopic() {
         IntegrationHttpProtocol protocol = createPendingProtocol();
-
-        CourseWebhookSubscriptionDTO subscription = new CourseWebhookSubscriptionDTO();
-        subscription.setHeaders(List.of(new HttpHeaderDTO("token", listenerToken)));
-        String url = listenerHost + "/" + WEBHOOK_LISTENER_COURSE_URI;
-        subscription.setUrl(url);
-        subscription.setUnsubscribeOtherWebhooks(true);
-        String method = "POST";
-        subscription.setMethod(method);
-        try {
-            courseWebhookAPIClient.subscribe(subscription, protocol);
-            handleSuccess(protocol);
-            LOGGER.info("Webhook {} {} registered to course topic", method, url);
-        } catch (CoursesAPIHttpException e){
-            handleHttpErrorProtocol(e, protocol);
-            LOGGER.error("Error on subscribing to course webhook", e);
-        } catch (Exception e){
-            handleExceptionProtocol(e, protocol);
-            LOGGER.error("Error on subscribing to course webhook", e);
+        int maxAttempts = 10;
+        for(int i = 0; i < maxAttempts; i++) {
+            CourseWebhookSubscriptionDTO subscription = new CourseWebhookSubscriptionDTO();
+            subscription.setHeaders(List.of(new HttpHeaderDTO("token", listenerToken)));
+            String url = listenerHost + "/" + WEBHOOK_LISTENER_COURSE_URI;
+            subscription.setUrl(url);
+            subscription.setUnsubscribeOtherWebhooks(true);
+            String method = "POST";
+            subscription.setMethod(method);
+            try {
+                courseWebhookAPIClient.subscribe(subscription, protocol);
+                handleSuccess(protocol);
+                LOGGER.info("Webhook {} {} registered to course topic", method, url);
+                break;
+            } catch (CoursesAPIHttpException e) {
+                handleHttpErrorProtocol(e, protocol);
+                LOGGER.error("Error on subscribing to course webhook", e);
+                addDelay((i+1)*1000L, i, maxAttempts);
+            } catch (Exception e) {
+                handleExceptionProtocol(e, protocol);
+                LOGGER.error("Error on subscribing to course webhook", e);
+                addDelay((i+1)*1000L, i, maxAttempts);
+            }
         }
 
+    }
+
+    private void addDelay(long delay, int attempt, int maxAttempts) {
+        if (attempt < maxAttempts - 1) {
+            LOGGER.info("Trying to subscribe to course webhook again");
+            delay(delay);
+        }
+    }
+
+    private static void delay(long delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.error("Thread interrupted");
+        }
     }
 
     private void handleSuccess(IntegrationHttpProtocol protocol) {

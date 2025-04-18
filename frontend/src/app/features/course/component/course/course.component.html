@@ -4,7 +4,17 @@
         <mat-card-subtitle>Vagas: {{vacancies}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-actions>
-        <div *ngIf="shouldRenderStatus()">{{getStatus()}}</div>
-        <button *ngIf="shouldRenderSubscribeButton()" (click)="subscribe()" mat-button disabled="{{vacancies == 0}}">Inscreva-se</button>
+        <div class="subscription-status {{course?.subscriptionStatus?.toLowerCase()}}" *ngIf="shouldRenderStatus()">
+          <mat-icon fontIcon="check_circle" class="status-icon icon-success"></mat-icon>
+          <mat-icon fontIcon="warning" class="status-icon icon-error"></mat-icon>
+          <div class="status-icon icon-pending">
+            <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+          </div>
+          {{getStatus()}}
+        </div>
+        <div style="width: 100%;">
+          <button *ngIf="shouldRenderSubscribeButton()" (click)="subscribe()" mat-button disabled="{{vacancies == 0}}">Inscreva-se</button>
+          <button *ngIf="shouldRenderTryAgainButton()" (click)="subscribe()" mat-button disabled="{{vacancies == 0}}">Tentar novamente</button>
+        </div>
     </mat-card-actions>
 </mat-card>

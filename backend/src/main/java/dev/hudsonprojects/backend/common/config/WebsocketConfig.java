@@ -27,6 +27,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketConfig.class);
+    public static final String NOTIFICATION_USER_DESTINATION = "/notification/user/";
 
     private final NotificationSecurityService notificationSecurityService;
 
@@ -65,8 +66,8 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
                             .map(String::valueOf)
                             .orElse(null);
                     try {
-                        if (destination.startsWith("/notification/user/")) {
-                            String username = destination.substring("/notification/user/".length());
+                        if (destination.startsWith(NOTIFICATION_USER_DESTINATION)) {
+                            String username = destination.substring(NOTIFICATION_USER_DESTINATION.length());
                             notificationSecurityService.validateToken(token, username);
                         } else {
                             notificationSecurityService.validateToken(token);

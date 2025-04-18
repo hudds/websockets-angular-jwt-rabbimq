@@ -1,7 +1,7 @@
 <div class="course-list-container">
     <ul class="course-list" *ngIf="coursesState.courses">
         <li *ngFor="let course of coursesState.courses" class="course-container">
-            <app-course [course]="course" (subscriptionEvent)="subscribeToCourse(course)">
+            <app-course class="course" [course]="course" (subscriptionEvent)="subscribeToCourse(course)">
             </app-course>
         </li>
     </ul>

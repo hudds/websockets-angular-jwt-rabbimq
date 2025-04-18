@@ -14,11 +14,12 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
+    console.log("auth guard")
       if(this.sessionService.getSessionStatus()?.status == 'AUTHENTICATED'){
         return true;
       }
       return this.router.createUrlTree(["/login"])
-      
+
   }
 
 }

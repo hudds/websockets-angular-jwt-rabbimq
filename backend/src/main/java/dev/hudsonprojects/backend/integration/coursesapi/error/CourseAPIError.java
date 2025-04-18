@@ -6,16 +6,16 @@ import java.util.List;
 
 public class CourseAPIError {
 
-    private CourseAPIError type;
+    private CourseAPIErrorType type;
     private CourseAPIMessage message;
     private String messageCode;
     private List<CourseAPIFieldError> fieldErrors = new ArrayList<>();
 
-    public CourseAPIError getType() {
+    public CourseAPIErrorType getType() {
         return type;
     }
 
-    public void setType(CourseAPIError type) {
+    public void setType(CourseAPIErrorType type) {
         this.type = type;
     }
 

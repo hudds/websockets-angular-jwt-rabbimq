@@ -19,6 +19,8 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
 
     Optional<Long> findUserIdByCpf(String cpf);
 
+    Optional<String> findUsernameByCpf(String cpf);
+
     Optional<AppUser> findByUsername(String username);
    
     boolean existsByCpf(String cpf);
@@ -37,4 +39,6 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
 	@Query("select new dev.hudsonprojects.backend.appuser.AppUserDTO(user) from AppUser user where user.userId = :userId")
 	Optional<AppUserDTO> findDTOById(@Param("userId") Long userId);
 
+    @Query("select appUser.username FROM AppUser appUser where appUser.userId = :userId")
+    Optional<String> findUsernameByUserId(@Param("userId") Long userId);
 }

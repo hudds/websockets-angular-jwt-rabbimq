@@ -66,7 +66,6 @@ public class SubscriptionService {
         createSubscription.setCourseId(courseId);
         queue.sendAsync(new CreateSubscriptionQueueMessage(loggedUser.getUserId(), createSubscription));
         return new SubscriptionStatusDTO(subscriptionStatus);
-
     }
 
     private Optional<ErrorDetails> translateAPIMessage(Integer statusCode, String responseBody) {

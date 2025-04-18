@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class UserNotificationData {
 
-    private Long userId;
+    private String username;
     private UserNotificationTopicName topic;
     private Object content;
 
@@ -12,17 +12,17 @@ public class UserNotificationData {
     }
 
     private UserNotificationData(Builder builder){
-        this.userId = builder.userId;
+        this.username = builder.username;
         this.topic = builder.eventName;
         this.content = builder.message;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
 
@@ -52,12 +52,12 @@ public class UserNotificationData {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         UserNotificationData that = (UserNotificationData) object;
-        return Objects.equals(userId, that.userId) && topic == that.topic && Objects.equals(content, that.content);
+        return Objects.equals(username, that.username) && topic == that.topic && Objects.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, topic, content);
+        return Objects.hash(username, topic, content);
     }
 
     public static Builder builder(){
@@ -65,14 +65,14 @@ public class UserNotificationData {
     }
 
     public static class Builder {
-        private Long userId;
+        private String username;
         private UserNotificationTopicName eventName;
         private Object message;
 
         private Builder(){}
 
-        public Builder setUserId(Long userId) {
-            this.userId = userId;
+        public Builder setUsername(String username) {
+            this.username = username;
             return this;
         }
 

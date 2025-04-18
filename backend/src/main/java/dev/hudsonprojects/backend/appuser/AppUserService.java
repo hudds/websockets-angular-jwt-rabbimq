@@ -1,5 +1,6 @@
 package dev.hudsonprojects.backend.appuser;
 
+import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,8 @@ public class AppUserService {
 	
 	
 	public AppUserDTO getLoggedUser() {
-		return appUserRepository.findDTOById(requestData.getUserOrUnauthorized().getUserId()).orElseThrow(() -> new NotFoundException(null));
+		return appUserRepository.findDTOById(requestData.getUserOrUnauthorized().getUserId())
+				.orElseThrow(() -> new NotFoundException(ErrorDetailsBuilder.buildWithMessage("error.user.notFound")));
 	}
 	
 	

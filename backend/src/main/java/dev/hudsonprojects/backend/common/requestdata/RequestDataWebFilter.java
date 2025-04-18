@@ -43,9 +43,6 @@ public class RequestDataWebFilter implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-
-		LOGGER.info("REQUEST {} {}", req.getMethod(), req.getRequestURL());
-		
 		
 		Optional.ofNullable(SecurityContextHolder.getContext())
 				.map(SecurityContext::getAuthentication)

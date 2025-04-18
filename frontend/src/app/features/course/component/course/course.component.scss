@@ -1,0 +1,44 @@
+.mat-mdc-card-actions{
+  flex-direction: column;
+
+}
+
+
+.mat-mdc-card {
+  height: 100%;
+}
+.subscription-status {
+  padding: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .status-icon{
+    display:none;
+    margin-right: 8px;
+  }
+
+}
+
+.subscription-status.error{
+  .icon-error{
+    display:inline;
+    color: orange;
+  }
+}
+
+.subscription-status.success{
+  .icon-success{
+    display: inline;
+    color: green;
+  }
+}
+
+
+.subscription-status.pending{
+  .icon-pending{
+    display: inline;
+
+  }
+}

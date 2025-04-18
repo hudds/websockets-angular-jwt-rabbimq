@@ -2,9 +2,14 @@ package dev.hudsonprojects.backend.appuser.notification;
 
 import dev.hudsonprojects.backend.appuser.AppUserRepository;
 import dev.hudsonprojects.backend.appuser.notification.exchange.UserNotificationExchangeSender;
+import dev.hudsonprojects.backend.common.config.WebsocketConfig;
+import dev.hudsonprojects.backend.common.exception.NotFoundException;
+import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserNotificationService {
@@ -21,35 +26,44 @@ public class UserNotificationService {
     }
 
     public void sendNotification(Long userId, UserNotificationTopicName eventName, Object message) {
+        String username = null;
+        if(userId != null) {
+            username = appUserRepository.findUsernameByUserId(userId)
+                    .orElseThrow(() -> new NotFoundException(ErrorDetailsBuilder.buildWithMessage("error.user.notFound")));
+        }
+        sendNotification(username, eventName, message);
+    }
+
+    public void sendNotification(String username, UserNotificationTopicName eventName, Object message) {
         sender.send(UserNotificationData.builder()
-                .setUserId(userId)
+                .setUsername(username)
                 .setMessage(message)
                 .setEventName(eventName)
                 .build());
     }
 
     public void sendGlobalNotification(UserNotificationTopicName eventName, Object message) {
-        sendNotification(null, eventName, message);
+        sendNotification((String) null, eventName, message);
     }
 
     public void sendNotificationToUserByCPF(String cpf, UserNotificationTopicName eventName, Object message) {
-        Long userId = appUserRepository.findUserIdByCpf(cpf).orElse(null);
-        if (userId == null) {
+        String username = appUserRepository.findUsernameByCpf(cpf).orElse(null);
+        if (username == null) {
             return;
         }
-        sendNotification(userId, eventName, message);
+        sendNotification(username, eventName, message);
     }
 
     public void sendNotification(UserNotificationData userNotification) {
-        String destination = "/" + getDestination(userNotification);
+        String destination = getDestination(userNotification);
         messagingTemplate.convertAndSend(destination, userNotification.getMessage());
     }
 
     private static String getDestination(UserNotificationData userNotification){
-        return userNotification.getUserId() == null ? "notification/global" : getUserKey(userNotification.getUserId());
+        return userNotification.getUsername() == null ? "/notification/global" : getUserKey(userNotification.getUsername());
     }
 
-    private static String getUserKey(Long userId) {
-        return "notification/user/id/" + userId;
+    private static String getUserKey(String username) {
+        return WebsocketConfig.NOTIFICATION_USER_DESTINATION + username;
     }
 }

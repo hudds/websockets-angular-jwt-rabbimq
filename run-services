@@ -1,3 +1,4 @@
+#!/bin/sh
 cd ./docker
 docker compose stop
 docker compose up db-web -d

@@ -13,10 +13,10 @@ public class HttpHeader extends DefaultEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long httpHeaderId;
-    @Column(name = "http_request_data_id", nullable = false, updatable = false)
+    @Column(name = "http_request_data_id", nullable = false, updatable = false, insertable = false)
     private Long httpRequestDataId;
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "http_request_data_id", referencedColumnName = "http_request_data_id", updatable = false, insertable = false)
+    @ManyToOne
+    @JoinColumn(name = "http_request_data_id", referencedColumnName = "http_request_data_id", updatable = false)
     private HttpRequestData httpRequestData;
     @Column(name = "name", nullable = false)
     private String name;

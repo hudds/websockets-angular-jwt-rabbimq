@@ -54,9 +54,12 @@ services:
       COURSES_API_URL: ${API_APPLICATION_URL}
       COURSES_API_USERNAME: $API_USER_DEFAULT_USERNAME
       COURSES_API_PASSWORD: $API_USER_DEFAULT_PASSWORD
+      BACKEND_WEBHOOK_COURSE_URL: $BACKEND_WEBHOOK_COURSE_URL
+      BACKEND_WEBHOOK_COURSE_TOKEN: $BACKEND_WEBHOOK_COURSE_TOKEN
+      SPRING_PROFILES_ACTIVE: $BACKEND_PROFILE
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       endpoint_mode: vip
 
   rabbitmq-api:
@@ -95,11 +98,18 @@ services:
       RABBIT_MQ_PASSWORD: $API_RABBIT_MQ_PASSWORD
       RABBIT_MQ_HOST: rabbitmq-api
       RABBIT_MQ_PORT: 5672
+      SPRING_PROFILES_ACTIVE: $API_PROFILE
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       endpoint_mode: vip
+  frontend:
+    depends_on:
+      - backend
+    image: hudsonprojects/wajr-frontend
+    ports:
+      - "4200:80"
 
-  connection-debug:
-    image: ubuntu
-    command: tail -F anything
+  # connection-debug:
+  #   image: ubuntu
+  #   command: tail -F anything

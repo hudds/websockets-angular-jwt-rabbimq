@@ -25,6 +25,7 @@ public class CourseInfoDTO extends CourseDTO {
     public CourseInfoDTO(Course course, Long subscriptionCount, LocalDateTime latestSubscription,  Boolean subscribed) {
         super(course);
         this.subscriptionCount = subscriptionCount;
+        this.latestSubscription = latestSubscription;
         this.subscribed = subscribed;
     }
 

@@ -4,6 +4,8 @@ import dev.hudsonprojects.backend.common.exception.UnauthorizedException;
 import dev.hudsonprojects.backend.common.messages.error.errordetails.ErrorDetailsBuilder;
 import dev.hudsonprojects.backend.integration.coursesapi.course.CourseInfoDTO;
 import dev.hudsonprojects.backend.integration.coursesapi.course.webhook.event.CourseApiEventService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;

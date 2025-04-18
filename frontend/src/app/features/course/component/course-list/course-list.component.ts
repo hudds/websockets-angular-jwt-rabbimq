@@ -5,6 +5,7 @@ import { UserNotificationService } from 'src/app/common/service/notification.ser
 import { Course, CourseFunctions } from 'src/app/common/types/course';
 import { CourseService } from 'src/app/features/course/service/course.service';
 import { SubscriptionService } from 'src/app/features/subscription/service/subscription.service';
+import { SubscriptionStatusValue } from 'src/app/features/subscription/types/subscription';
 
 @Component({
   selector: 'app-course-list',
@@ -16,7 +17,7 @@ export class CourseListComponent implements OnInit {
 
   coursesState = new CoursesState();
 
-  constructor(private courseService: CourseService, private _snackBar : MatSnackBar, private subscriptionService : SubscriptionService, private sseNotificationService : UserNotificationService) {
+  constructor(private courseService: CourseService, private _snackBar : MatSnackBar, private subscriptionService : SubscriptionService, private notificationService : UserNotificationService) {
     this.coursesState.pageNumber = -1
     this.coursesState.pageSize = 12
   }
@@ -26,6 +27,16 @@ export class CourseListComponent implements OnInit {
     this.courseService.courseSubject.subscribe(course => {
       if (course) {
         this.updateCourse(course)
+      }
+    })
+
+    this.notificationService.subscriptionStatusSubject.subscribe(subscriptionStatus =>{
+      console.log("Subscription status event: ", subscriptionStatus)
+      if(subscriptionStatus){
+        let course = this.coursesState.courseMap.get(subscriptionStatus.courseId);
+        if(course){
+          course.subscriptionStatus = subscriptionStatus.status
+        }
       }
     })
   }
@@ -54,6 +65,7 @@ export class CourseListComponent implements OnInit {
 
   subscribeToCourse(course : Course ){
     let errorHandler = new AppErrorHandler(this._snackBar);
+    course.subscriptionStatus = SubscriptionStatusValue.PENDING;
     this.subscriptionService.subscribeToCourse(course.courseId).subscribe({
       next: subscription => course.subscriptionStatus = subscription.status,
       error: error => errorHandler.handle(error)

@@ -19,7 +19,7 @@ public class HttpRequestData extends DefaultEntity {
     private String method;
     @Column(name = "url", nullable = false)
     private String url;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "http_request_data_id", referencedColumnName = "http_request_data_id")
     private List<HttpHeader> headers;
 

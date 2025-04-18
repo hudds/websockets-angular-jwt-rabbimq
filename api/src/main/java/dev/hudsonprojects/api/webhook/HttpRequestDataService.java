@@ -38,6 +38,5 @@ public class HttpRequestDataService {
         httpRequestData.setUpdatedAt(LocalDateTime.now());
         httpRequestDataRepository.save(httpRequestData);
         httpRequestData.getHeaders().forEach(httpHeader -> httpHeader.setHttpRequestDataId(httpRequestData.getHttpRequestDataId()));
-        httpRequestData.getHeaders().forEach(httpHeaderRepository::save);
     }
 }

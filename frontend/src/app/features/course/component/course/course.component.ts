@@ -31,6 +31,13 @@ export class CourseComponent {
     return !(this.course?.subscribed) && (this.course?.subscriptionStatus == null || !statusShouldNotRender.has(this.course?.subscriptionStatus))
   }
 
+  shouldRenderTryAgainButton() : boolean{
+    let statusShouldNotRender = new Set<SubscriptionStatusValue>();
+    statusShouldNotRender.add(SubscriptionStatusValue.SUCCESS);
+    statusShouldNotRender.add(SubscriptionStatusValue.PENDING);
+    return this.course?.subscriptionStatus == SubscriptionStatusValue.ERROR;
+  }
+
   getStatus() : string {
     if(this.course?.subscriptionStatus){
       let statusMap = new Map<SubscriptionStatusValue, string>();
